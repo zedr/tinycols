@@ -196,40 +196,49 @@ delete_clusters (board_t *board, results_t *results)
 }
 
 int
-find_drops (board_t *board, gaps_t *gaps)
+find_drops (board_t *board, drops_t *drops)
 {
 	int found = 0;
 
-	// IMPLEMENT ME
+	ushort_t cv;
+	for (int col = 0, eb, eg; col < BOARD_COLS; col++) {
+		eb = -1;
+		eg = -1;
+		for (int c = BOARD_CELLS - BOARD_COLS + col; c >= 0; c -= BOARD_COLS) {
+			cv = (*board)[c];
+			if (cv) {
+				if (eg != -1 && eb == -1) {
+					// end of block
+					eb = c;
+				}
+			} else {
+				if (eb != -1) {
+					// start of block
+					(*drops)[c + BOARD_COLS][0] = (eb - c) / BOARD_COLS;
+					(*drops)[c + BOARD_COLS][1] = (eg - eb) / BOARD_COLS;
+					found++;
+					eb = -1;
+					eg = c;
+				} else if (eg == -1){
+					// end of gap
+					eg = c;
+				}
+			}
+		}
+		if (eb != -1) {
+			(*drops)[col][0] = (eb + BOARD_COLS) / BOARD_COLS;
+			(*drops)[col][1] = (eg - eb) / BOARD_COLS;
+			found++;
+		}
+	}
 
 	return found;
 }
 
 void
-apply_gravity (board_t *board, board_t *changes)
+apply_gravity (board_t *board, drops_t *drops)
 {
-	for (int i = BOARD_CELLS - 1, c, n; i >= 0; i--) {
-		c = (*board)[i];
-		if (c) {
-			for (int l = i + BOARD_COLS;; l += BOARD_COLS) {
-				if ((l >= BOARD_CELLS) || (*board)[l] != 0) {
-					n = l - BOARD_COLS;
-					if (changes != NULL) {
-						(*changes)[i] = n;
-					}
-					if (n != i) {
-						(*board)[n] = c;
-						(*board)[i] = 0;
-					}
-					break;
-				}
-			}
-		} else {
-			if (changes != NULL) {
-				(*changes)[i] = i;
-			}
-		}
-	}
+	// Implement me;
 }
 
 void

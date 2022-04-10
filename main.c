@@ -123,6 +123,7 @@ game_tick (game_t *game)
 {
 	unsigned long ts = time (NULL);
 	results_t results;
+	drops_t drops;
 	int deleted;
 
 	if (ts > last_ts) {
@@ -134,8 +135,14 @@ game_tick (game_t *game)
 				do {
 					find_clusters (game->board, &results);
 					deleted = delete_clusters (game->board, &results);
+					if (deleted) {
+						if(find_drops (game->board, &drops))
+							apply_gravity (game->board, &drops);
+					} else {
+						break;
+					}
 					apply_gravity (game->board, NULL);
-				} while (deleted);
+				} while (TRUE);
 				pick_and_position_next (game);
 				draw_piece (game->next);
 			} else {

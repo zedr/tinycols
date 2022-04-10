@@ -38,7 +38,7 @@
 
 typedef unsigned short ushort_t;
 typedef ushort_t board_t[BOARD_CELLS];
-typedef ushort_t gaps_t[BOARD_CELLS][2];
+typedef ushort_t drops_t[BOARD_CELLS][2];
 
 typedef enum {
 	NONE,
@@ -121,10 +121,10 @@ void
 find_clusters (board_t *board, results_t *results);
 
 int
-find_drops(board_t *board, gaps_t *gaps);
+find_drops(board_t *board, drops_t *drops);
 
 void
-apply_gravity(board_t *board, board_t *changes);
+apply_gravity(board_t *board, drops_t *drops);
 
 void
 append(cluster_t *cls, ushort_t col, results_t *res);

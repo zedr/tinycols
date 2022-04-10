@@ -3,37 +3,44 @@
 #include "../core.h"
 #include "minunit.h"
 
-MU_TEST(test_find_verticals)
+MU_TEST(test_find_drops)
 {
 	board_t board = {
+		1, 0, 1, 1, 0, 0,
+		0, 1, 1, 0, 0, 0,
+		0, 1, 0, 0, 0, 0,
 		1, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
+		1, 0, 1, 0, 0, 0,
+		1, 0, 1, 0, 0, 0,
+		1, 0, 1, 0, 0, 0,
 		1, 0, 0, 0, 0, 0,
 		1, 0, 0, 0, 0, 0,
 		1, 0, 0, 0, 0, 0,
 		1, 0, 0, 0, 0, 0,
 		2, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0
+		1, 1, 0, 0, 0, 0
+	};
+	drops_t eg = {
+		{1, 2}, {0, 0}, {2, 2}, {1, 12}, {0, 0}, {0, 0},
+		{0, 0}, {2, 9}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+		{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+		{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+		{0, 0}, {0, 0}, {3, 6}, {0, 0}, {0, 0}, {0, 0}
 	};
 
-	gaps_t found_gaps = {{0, 0}};
+	drops_t fg = {{0, 0}};
 
-	find_drops(&board, &found_gaps);
+	int found = find_drops(&board, &fg);
 
-	gaps_t expected_gaps = {{1, 1}};
+	mu_check(found == 5);
 
+	char *s  = malloc (sizeof(*s) * 64);
 	for (int i = 0; i < BOARD_CELLS; i++) {
 		for (int j = 0; j < 2; j++) {
-			mu_assert(found_gaps[i][j] == expected_gaps[i][j], "sasa");
+			sprintf (s, "idx %d: r%d, %d != e%d, %d", i, fg[i][0], fg[i][1], eg[i][0], eg[i][1]);
+			mu_assert(fg[i][j] == eg[i][j], s);
 		}
 	}
-
-	mu_fail("Finish me!");
 }
 
 MU_TEST(test_delete_clusters_2)
@@ -90,16 +97,10 @@ MU_TEST(test_apply_gravity)
 		1, 1, 0, 1, 0, 0,
 	};
 
-	board_t moves = {0};
+	drops_t drops;
+	//find_drops (&before_b, &drops);
 
-	apply_gravity (&before_b, &moves);
-
-	mu_check(moves[5] == BOARD_CELLS - 1);
-	mu_check(moves[56] == 68);
-	mu_check(moves[62] == 74);
-	mu_check(moves[69] == 69);
-	mu_check(moves[70] == 76);
-	mu_check(moves[75] == 75);
+	apply_gravity (&before_b, &drops);
 
 	board_t after_b = {
 		0, 0, 0, 0, 0, 0,
@@ -362,7 +363,7 @@ MU_TEST_SUITE(test_suite)
 	MU_RUN_TEST(test_delete_clusters_1);
 	MU_RUN_TEST(test_delete_clusters_2);
 	MU_RUN_TEST(test_apply_gravity);
-	MU_RUN_TEST(test_find_verticals);
+	MU_RUN_TEST(test_find_drops);
 }
 
 int
