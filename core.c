@@ -241,11 +241,6 @@ find_drops (board_t *board, drops_t *drops)
 }
 
 void
-move_column(board_t *board, int idx, int y, int l)
-{
-}
-
-void
 apply_gravity (board_t *board, drops_t *drops)
 {
 	int (*cell)[2];
