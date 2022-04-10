@@ -201,10 +201,11 @@ find_drops (board_t *board, drops_t *drops)
 	int found = 0;
 
 	ushort_t cv;
-	for (int col = 0, eb, eg; col < BOARD_COLS; col++) {
+	for (int col = 0, eb, eg, acc; col < BOARD_COLS; col++) {
 		eb = -1;
 		eg = -1;
-		for (int c = BOARD_CELLS - BOARD_COLS + col; c >= 0; c -= BOARD_COLS) {
+		acc = 0;
+		for (int c = BOARD_CELLS - BOARD_COLS + col, tmp; c >= 0; c -= BOARD_COLS) {
 			cv = (*board)[c];
 			if (cv) {
 				if (eg != -1 && eb == -1) {
@@ -214,8 +215,10 @@ find_drops (board_t *board, drops_t *drops)
 			} else {
 				if (eb != -1) {
 					// start of block
+					tmp = ((eg - eb) / BOARD_COLS);
 					(*drops)[c + BOARD_COLS][0] = (eb - c) / BOARD_COLS;
-					(*drops)[c + BOARD_COLS][1] = (eg - eb) / BOARD_COLS;
+					(*drops)[c + BOARD_COLS][1] = tmp + acc;
+					acc += tmp;
 					found++;
 					eb = -1;
 					eg = c;
@@ -227,7 +230,7 @@ find_drops (board_t *board, drops_t *drops)
 		}
 		if (eb != -1) {
 			(*drops)[col][0] = (eb + BOARD_COLS) / BOARD_COLS;
-			(*drops)[col][1] = (eg - eb) / BOARD_COLS;
+			(*drops)[col][1] = (eg - eb) / BOARD_COLS + acc;
 			found++;
 		}
 	}
