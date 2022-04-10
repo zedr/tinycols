@@ -141,7 +141,6 @@ game_tick (game_t *game)
 					} else {
 						break;
 					}
-					apply_gravity (game->board, NULL);
 				} while (TRUE);
 				pick_and_position_next (game);
 				draw_piece (game->next);

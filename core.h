@@ -38,7 +38,7 @@
 
 typedef unsigned short ushort_t;
 typedef ushort_t board_t[BOARD_CELLS];
-typedef ushort_t drops_t[BOARD_CELLS][2];
+typedef int drops_t[BOARD_CELLS][2];
 
 typedef enum {
 	NONE,

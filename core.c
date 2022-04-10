@@ -206,6 +206,8 @@ find_drops (board_t *board, drops_t *drops)
 		eg = -1;
 		acc = 0;
 		for (int c = BOARD_CELLS - BOARD_COLS + col, tmp; c >= 0; c -= BOARD_COLS) {
+			(*drops)[c][0] = 0;
+			(*drops)[c][1] = 0;
 			cv = (*board)[c];
 			if (cv) {
 				if (eg != -1 && eb == -1) {
@@ -239,9 +241,29 @@ find_drops (board_t *board, drops_t *drops)
 }
 
 void
+move_column(board_t *board, int idx, int y, int l)
+{
+}
+
+void
 apply_gravity (board_t *board, drops_t *drops)
 {
-	// Implement me;
+	int (*cell)[2];
+	int gap = 0;
+	int len = 0;
+
+
+	for (int i = BOARD_CELLS - 1; i > -1; i--) {
+		cell = &(*drops)[i];
+		len = (*cell)[0];
+		if (len != 0) {
+			gap = (*cell)[1];
+			for (int j = len - 1; j >= 0; j--) {
+				(*board)[i + (gap + j) * BOARD_COLS] = (*board)[i + j * BOARD_COLS];
+				(*board)[i + j * BOARD_COLS] = 0;
+			}
+		}
+	}
 }
 
 void
