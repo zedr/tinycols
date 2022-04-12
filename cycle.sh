@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-make clean && make && ./test
+make clean && make test && ./test

@@ -196,9 +196,9 @@ delete_clusters (board_t *board, results_t *results)
 }
 
 int
-find_drops (board_t *board, drops_t *drops)
+apply_gravity (board_t *board, void (*cb) (board_t *b, int sc, int l, int tc))
 {
-	int found = 0;
+	int drops = 0;
 
 	ushort_t cv;
 	for (int col = 0, eb, eg, acc; col < BOARD_COLS; col++) {
@@ -206,8 +206,6 @@ find_drops (board_t *board, drops_t *drops)
 		eg = -1;
 		acc = 0;
 		for (int c = BOARD_CELLS - BOARD_COLS + col, tmp; c >= 0; c -= BOARD_COLS) {
-			(*drops)[c][0] = 0;
-			(*drops)[c][1] = 0;
 			cv = (*board)[c];
 			if (cv) {
 				if (eg != -1 && eb == -1) {
@@ -217,11 +215,10 @@ find_drops (board_t *board, drops_t *drops)
 			} else {
 				if (eb != -1) {
 					// start of block
-					tmp = ((eg - eb) / BOARD_COLS);
-					(*drops)[c + BOARD_COLS][0] = (eb - c) / BOARD_COLS;
-					(*drops)[c + BOARD_COLS][1] = tmp + acc;
+					tmp = (eb - c) / BOARD_COLS;
+					cb(board, c, tmp, eg + acc);
 					acc += tmp;
-					found++;
+					drops++;
 					eb = -1;
 					eg = c;
 				} else if (eg == -1){
@@ -231,33 +228,20 @@ find_drops (board_t *board, drops_t *drops)
 			}
 		}
 		if (eb != -1) {
-			(*drops)[col][0] = (eb + BOARD_COLS) / BOARD_COLS;
-			(*drops)[col][1] = (eg - eb) / BOARD_COLS + acc;
-			found++;
+			cb(board, col, eb / BOARD_COLS, eg + acc);
+			drops++;
 		}
 	}
 
-	return found;
+	return drops;
 }
 
 void
-apply_gravity (board_t *board, drops_t *drops)
+move_column (board_t *board, int sc, int l, int tc)
 {
-	int (*cell)[2];
-	int gap = 0;
-	int len = 0;
-
-
-	for (int i = BOARD_CELLS - 1; i > -1; i--) {
-		cell = &(*drops)[i];
-		len = (*cell)[0];
-		if (len != 0) {
-			gap = (*cell)[1];
-			for (int j = len - 1; j >= 0; j--) {
-				(*board)[i + (gap + j) * BOARD_COLS] = (*board)[i + j * BOARD_COLS];
-				(*board)[i + j * BOARD_COLS] = 0;
-			}
-		}
+	for (int i = 0; i < l; i++) {
+		(*board)[tc + (i * BOARD_COLS)] = (*board)[sc + (i * BOARD_COLS)];
+		(*board)[sc + (i * BOARD_COLS)] = 0;
 	}
 }
 

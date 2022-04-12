@@ -121,10 +121,10 @@ void
 find_clusters (board_t *board, results_t *results);
 
 int
-find_drops(board_t *board, drops_t *drops);
+apply_gravity (board_t *board, void (*cb) (board_t *b, int sc, int l, int tc));
 
 void
-apply_gravity(board_t *board, drops_t *drops);
+move_column (board_t *board, int sc, int l, int tc);
 
 void
 append(cluster_t *cls, ushort_t col, results_t *res);

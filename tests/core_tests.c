@@ -3,45 +3,6 @@
 #include "../core.h"
 #include "minunit.h"
 
-MU_TEST(test_find_drops)
-{
-	board_t board = {
-		1, 0, 1, 1, 0, 0,
-		0, 1, 1, 0, 0, 0,
-		0, 1, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 1, 0, 0, 0,
-		1, 0, 1, 0, 0, 0,
-		1, 0, 1, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		1, 0, 0, 0, 0, 0,
-		2, 0, 0, 0, 0, 0,
-		1, 1, 0, 0, 0, 0
-	};
-	drops_t eg = {
-		{1, 2}, {0, 0}, {2, 8}, {1, 12}, {0, 0}, {0, 0},
-		{0, 0}, {2, 9}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
-		{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
-		{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
-		{0, 0}, {0, 0}, {3, 6}, {0, 0}, {0, 0}, {0, 0}
-	};
-
-	drops_t fg = {{0, 0}};
-
-	int found = find_drops(&board, &fg);
-
-	mu_check(found == 5);
-
-	char *s  = malloc (sizeof(*s) * 64);
-	for (int i = 0; i < BOARD_CELLS; i++) {
-		for (int j = 0; j < 2; j++) {
-			sprintf (s, "idx %d: r%d, %d != e%d, %d", i, fg[i][0], fg[i][1], eg[i][0], eg[i][1]);
-			mu_assert(fg[i][j] == eg[i][j], s);
-		}
-	}
-}
 
 MU_TEST(test_delete_clusters_2)
 {
@@ -81,49 +42,96 @@ MU_TEST(test_delete_clusters_2)
 
 MU_TEST(test_apply_gravity)
 {
-	board_t before_b = {
-		0, 0, 0, 0, 0, 1, // 0
+	board_t bb = {
+		1, 0, 0, 0, 0, 0, // 0
+		1, 1, 0, 1, 0, 0, // 6
+		0, 1, 1, 1, 0, 0, // 12
+		0, 1, 1, 0, 0, 0, // 18
+		0, 0, 1, 0, 0, 0, // 24
+		0, 0, 1, 1, 0, 0, // 30
+		0, 0, 0, 1, 0, 0, // 36
+		0, 0, 0, 0, 0, 0, // 42
+		0, 0, 0, 0, 0, 0, // 48
+		0, 0, 0, 0, 0, 0, // 54
+		1, 0, 0, 0, 0, 0, // 60
+		1, 1, 0, 1, 0, 0, // 66
+		1, 1, 0, 1, 0, 0, // 72
+	};
+
+	board_t ab = {
+		0, 0, 0, 0, 0, 0, // 0
 		0, 0, 0, 0, 0, 0, // 6
 		0, 0, 0, 0, 0, 0, // 12
 		0, 0, 0, 0, 0, 0, // 18
 		0, 0, 0, 0, 0, 0, // 24
 		0, 0, 0, 0, 0, 0, // 30
-		0, 0, 1, 0, 0, 0, // 36
+		0, 0, 0, 0, 0, 0, // 36
+		0, 0, 0, 1, 0, 0, // 42
+		1, 1, 0, 1, 0, 0, // 48
+		1, 1, 1, 1, 0, 0, // 54
+		1, 1, 1, 1, 0, 0, // 60
+		1, 1, 1, 1, 0, 0, // 66
+		1, 1, 1, 1, 0, 0, // 72
+	};
+
+	int drops = apply_gravity (&bb, &move_column);
+
+	mu_check(drops == 3);
+
+	char *s  = malloc (sizeof(*s) * 64);
+	for (int i = 0; i < BOARD_CELLS; i++) {
+		for (int j = 0; j < 2; j++) {
+			sprintf (s, "idx %d: %d != %d", i, bb[i], ab[i]);
+			mu_assert(bb[i] == ab[i], s);
+		}
+	}
+}
+
+MU_TEST(test_move_column)
+{
+	board_t bb = {
+		1, 0, 0, 0, 0, 0, // 0
+		1, 1, 0, 0, 0, 0, // 6
+		0, 1, 1, 0, 0, 0, // 12
+		0, 1, 1, 0, 0, 0, // 18
+		0, 0, 1, 0, 0, 0, // 24
+		0, 0, 1, 0, 0, 0, // 30
+		0, 0, 0, 0, 0, 0, // 36
 		0, 0, 0, 0, 0, 0, // 42
-		0, 0, 1, 0, 0, 0, // 48
-		0, 0, 1, 0, 0, 0, // 54
-		1, 0, 1, 0, 0, 0, // 60
-		1, 1, 0, 1, 1, 0, // 66
+		0, 0, 0, 0, 0, 0, // 48
+		0, 0, 0, 0, 0, 0, // 54
+		1, 0, 0, 0, 0, 0, // 60
+		1, 1, 0, 1, 0, 0, // 66
 		1, 1, 0, 1, 0, 0, // 72
 	};
 
-	drops_t drops;
-	find_drops (&before_b, &drops);
-
-	apply_gravity (&before_b, &drops);
-
-	board_t after_b = {
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0,
-		0, 0, 1, 0, 0, 0,
-		1, 0, 1, 0, 0, 0,
-		1, 1, 1, 1, 0, 0,
-		1, 1, 1, 1, 1, 1,
+	board_t ab = {
+		0, 0, 0, 0, 0, 0, // 0
+		0, 0, 0, 0, 0, 0, // 6
+		0, 0, 0, 0, 0, 0, // 12
+		0, 0, 0, 0, 0, 0, // 18
+		0, 0, 0, 0, 0, 0, // 24
+		0, 0, 0, 0, 0, 0, // 30
+		0, 0, 0, 0, 0, 0, // 36
+		0, 0, 0, 0, 0, 0, // 42
+		1, 1, 0, 0, 0, 0, // 48
+		1, 1, 1, 0, 0, 0, // 54
+		1, 1, 1, 0, 0, 0, // 60
+		1, 1, 1, 1, 0, 0, // 66
+		1, 1, 1, 1, 0, 0, // 72
 	};
 
-	char *s = malloc (sizeof (*s) * 32);
+	move_column (&bb, 0, 2, 8 * BOARD_COLS);
+	move_column (&bb, 7, 3, 8 * BOARD_COLS + 1);
+	move_column (&bb, 14, 4, 9 * BOARD_COLS + 2);
+
+	char *s  = malloc (sizeof(*s) * 64);
 	for (int i = 0; i < BOARD_CELLS; i++) {
-		sprintf (s, "Compare idx %d: r:%d e:%d ?", i, before_b[i], after_b[i]);
-		mu_assert(before_b[i] == after_b[i], s);
+		for (int j = 0; j < 2; j++) {
+			sprintf (s, "idx %d: %d != %d", i, bb[i], ab[i]);
+			mu_assert(bb[i] == ab[i], s);
+		}
 	}
-	free (s);
 }
 
 MU_TEST(test_cluster_append)
@@ -362,8 +370,8 @@ MU_TEST_SUITE(test_suite)
 	MU_RUN_TEST(test_board_scan_1);
 	MU_RUN_TEST(test_delete_clusters_1);
 	MU_RUN_TEST(test_delete_clusters_2);
+	MU_RUN_TEST(test_move_column);
 	MU_RUN_TEST(test_apply_gravity);
-	MU_RUN_TEST(test_find_drops);
 }
 
 int
