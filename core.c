@@ -205,7 +205,7 @@ apply_gravity (board_t *board, void (*cb) (board_t *b, int sc, int l, int tc))
 		eb = -1;
 		eg = -1;
 		acc = 0;
-		for (int c = BOARD_CELLS - BOARD_COLS + col, tmp; c >= 0; c -= BOARD_COLS) {
+		for (int c = BOARD_CELLS - BOARD_COLS + col, len; c >= 0; c -= BOARD_COLS) {
 			cv = (*board)[c];
 			if (cv) {
 				if (eg != -1 && eb == -1) {
@@ -215,10 +215,10 @@ apply_gravity (board_t *board, void (*cb) (board_t *b, int sc, int l, int tc))
 			} else {
 				if (eb != -1) {
 					// start of block
-					tmp = (eb - c) / BOARD_COLS;
-					cb(board, c, tmp, eg + acc);
-					acc += tmp;
 					drops++;
+					len = (eb - c) / BOARD_COLS;
+					cb(board, c + BOARD_COLS, len, eg + (acc * BOARD_COLS));
+					acc += (eg - c - (len * BOARD_COLS)) / BOARD_COLS;
 					eb = -1;
 					eg = c;
 				} else if (eg == -1){
@@ -228,8 +228,8 @@ apply_gravity (board_t *board, void (*cb) (board_t *b, int sc, int l, int tc))
 			}
 		}
 		if (eb != -1) {
-			cb(board, col, eb / BOARD_COLS, eg + acc);
 			drops++;
+			cb(board, col, eb / BOARD_COLS + 1, eg + acc);
 		}
 	}
 
@@ -240,8 +240,8 @@ void
 move_column (board_t *board, int sc, int l, int tc)
 {
 	for (int i = 0; i < l; i++) {
-		(*board)[tc + (i * BOARD_COLS)] = (*board)[sc + (i * BOARD_COLS)];
-		(*board)[sc + (i * BOARD_COLS)] = 0;
+		(*board)[tc - i * BOARD_COLS] = (*board)[sc + (l - 1 - i) * BOARD_COLS];
+		(*board)[sc + (l - 1 - i) * BOARD_COLS] = 0;
 	}
 }
 

@@ -54,7 +54,7 @@ MU_TEST(test_apply_gravity)
 		0, 0, 0, 0, 0, 0, // 48
 		0, 0, 0, 0, 0, 0, // 54
 		1, 0, 0, 0, 0, 0, // 60
-		1, 1, 0, 1, 0, 0, // 66
+		1, 1, 0, 0, 0, 0, // 66
 		1, 1, 0, 1, 0, 0, // 72
 	};
 
@@ -66,7 +66,7 @@ MU_TEST(test_apply_gravity)
 		0, 0, 0, 0, 0, 0, // 24
 		0, 0, 0, 0, 0, 0, // 30
 		0, 0, 0, 0, 0, 0, // 36
-		0, 0, 0, 1, 0, 0, // 42
+		0, 0, 0, 0, 0, 0, // 42
 		1, 1, 0, 1, 0, 0, // 48
 		1, 1, 1, 1, 0, 0, // 54
 		1, 1, 1, 1, 0, 0, // 60
@@ -76,7 +76,7 @@ MU_TEST(test_apply_gravity)
 
 	int drops = apply_gravity (&bb, &move_column);
 
-	mu_check(drops == 3);
+	mu_check(drops == 5);
 
 	char *s  = malloc (sizeof(*s) * 64);
 	for (int i = 0; i < BOARD_CELLS; i++) {
@@ -91,7 +91,7 @@ MU_TEST(test_move_column)
 {
 	board_t bb = {
 		1, 0, 0, 0, 0, 0, // 0
-		1, 1, 0, 0, 0, 0, // 6
+		2, 1, 0, 0, 0, 0, // 6
 		0, 1, 1, 0, 0, 0, // 12
 		0, 1, 1, 0, 0, 0, // 18
 		0, 0, 1, 0, 0, 0, // 24
@@ -115,15 +115,15 @@ MU_TEST(test_move_column)
 		0, 0, 0, 0, 0, 0, // 36
 		0, 0, 0, 0, 0, 0, // 42
 		1, 1, 0, 0, 0, 0, // 48
-		1, 1, 1, 0, 0, 0, // 54
+		2, 1, 1, 0, 0, 0, // 54
 		1, 1, 1, 0, 0, 0, // 60
 		1, 1, 1, 1, 0, 0, // 66
 		1, 1, 1, 1, 0, 0, // 72
 	};
 
-	move_column (&bb, 0, 2, 8 * BOARD_COLS);
-	move_column (&bb, 7, 3, 8 * BOARD_COLS + 1);
-	move_column (&bb, 14, 4, 9 * BOARD_COLS + 2);
+	move_column (&bb, 0, 2, 54);
+	move_column (&bb, 7, 3, 61);
+	move_column (&bb, 14, 4, 74);
 
 	char *s  = malloc (sizeof(*s) * 64);
 	for (int i = 0; i < BOARD_CELLS; i++) {
@@ -132,6 +132,7 @@ MU_TEST(test_move_column)
 			mu_assert(bb[i] == ab[i], s);
 		}
 	}
+	free(s);
 }
 
 MU_TEST(test_cluster_append)

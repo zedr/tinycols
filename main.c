@@ -136,8 +136,7 @@ game_tick (game_t *game)
 					find_clusters (game->board, &results);
 					deleted = delete_clusters (game->board, &results);
 					if (deleted) {
-						if(find_drops (game->board, &drops))
-							apply_gravity (game->board, &drops);
+						apply_gravity (game->board, &move_column);
 					} else {
 						break;
 					}
