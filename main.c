@@ -123,7 +123,6 @@ game_tick (game_t *game)
 {
 	unsigned long ts = time (NULL);
 	results_t results;
-	drops_t drops;
 	int deleted;
 
 	if (ts > last_ts) {
