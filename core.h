@@ -66,6 +66,7 @@ typedef struct {
 
 typedef struct {
     unsigned long score;
+    int level;
 	int difficulty;
 	unsigned int interval;
 	board_t *board;

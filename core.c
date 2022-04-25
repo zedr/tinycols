@@ -41,6 +41,7 @@ void
 init_game (game_t *game, int difficulty)
 {
     game->score = 0;
+    game->level = 0;
 	game->difficulty = difficulty;
 	game->board = AllocMem (sizeof (*(game->board)), MEMF_PUBLIC);
 	game->next = AllocMem (sizeof (*(game->next)), MEMF_PUBLIC);

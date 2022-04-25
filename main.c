@@ -123,6 +123,7 @@ game_tick (game_t *game)
 {
 	unsigned long ts = time (NULL);
 	results_t results;
+    int chain = 0;
 	int deleted;
 
 	if (ts > last_ts) {
@@ -133,9 +134,11 @@ game_tick (game_t *game)
 				init_results (&results);
 				do {
 					find_clusters (game->board, &results);
+                    game->score += calc_points(&results, game->level, chain);
 					deleted = delete_clusters (game->board, &results);
 					if (deleted) {
 						apply_gravity (game->board, &move_column);
+                        chain++;
 					} else {
 						break;
 					}
@@ -154,9 +157,11 @@ game_tick (game_t *game)
 }
 
 static void
-draw_coords (piece_t *piece)
+draw_debug (game_t *game)
 {
-	mvprintw (1, 1, "piece coords: \t%d, %d ", piece->x, piece->y);
+	mvprintw (1, 1, "piece coords: \t%d, %d ",
+              game->current->x, game->current->y);
+    mvprintw (2, 1, "score: \t%ld ", game->score);
 }
 
 static void
@@ -171,7 +176,7 @@ play_game (void)
 	do {
 		draw_board (game->board);
 		draw_piece (game->current);
-		draw_coords (game->current);
+		draw_debug (game);
 		process_keys (game);
 		refresh();
 		erase_piece (game->current);
