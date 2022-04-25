@@ -8,7 +8,7 @@
 #include "core.h"
 
 WINDOW *win;
-int start_x = 0, start_y = 0;
+int start_x = 0, start_y = 0, debug = 1;
 unsigned long last_ts = 0;
 
 void draw_rect (int x1, int y1, int x2, int y2)
@@ -108,7 +108,9 @@ process_keys (game_t *game)
 			move_command (MOVE_LEFT, game, &erase_piece);
 			break;
 		case KEY_DOWN:
-			move_command (MOVE_DOWN, game, &erase_piece);
+			if (move_command (MOVE_DOWN, game, &erase_piece)) {
+                game->score += (game->level + 1);
+            }
 			break;
 		case KEY_UP:
 			shift_command (SHIFT_UP, game->current, &erase_piece);
@@ -116,6 +118,24 @@ process_keys (game_t *game)
 		default:
 			break;
 	}
+}
+
+static void
+display_deleted(results_t *results)
+{
+    int do_pause = 0;
+
+    for (int i = 0; i < BOARD_CELLS; i++) {
+        if (results->targets[i] > 0) {
+            do_pause = 1;
+            mvaddch(start_y + (i / BOARD_COLS),
+                    16, '*');
+        }
+    }
+
+    if (do_pause) {
+        usleep(100000);
+    }
 }
 
 static int
@@ -134,6 +154,7 @@ game_tick (game_t *game)
 				init_results (&results);
 				do {
 					find_clusters (game->board, &results);
+                    display_deleted(&results);
                     game->score += calc_points(&results, game->level, chain);
 					deleted = delete_clusters (game->board, &results);
 					if (deleted) {
@@ -159,9 +180,11 @@ game_tick (game_t *game)
 static void
 draw_debug (game_t *game)
 {
-	mvprintw (1, 1, "piece coords: \t%d, %d ",
-              game->current->x, game->current->y);
-    mvprintw (2, 1, "score: \t%ld ", game->score);
+    mvprintw (1, 1, "score: \t%ld ", game->score);
+    if (debug) {
+        mvprintw (2, 1, "piece coords: \t%d, %d ",
+                  game->current->x, game->current->y);
+    }
 }
 
 static void
@@ -176,6 +199,7 @@ play_game (void)
 	do {
 		draw_board (game->board);
 		draw_piece (game->current);
+        draw_piece (game->next);
 		draw_debug (game);
 		process_keys (game);
 		refresh();

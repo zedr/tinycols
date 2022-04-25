@@ -258,8 +258,6 @@ init_cluster(cluster_t *cluster)
 void
 init_results (results_t *results)
 {
-    cluster_t *cluster;
-
 	for (int i = 0; i < MAX_DIFFICULTY + 1; i++) {
         init_cluster(&(results->clusters[i]));
 	}

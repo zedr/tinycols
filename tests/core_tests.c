@@ -66,6 +66,7 @@ MU_TEST(test_scores) {
     score = calc_points(&results, 1, 0);
     sprintf(s, "%ld != %ld", score, (unsigned long) 600);
     mu_assert(score == 600, s);
+
     free_game(game);
 }
 
@@ -413,7 +414,6 @@ MU_TEST(test_setup_game) {
 }
 
 MU_TEST_SUITE(test_suite) {
-    /*
 	MU_RUN_TEST(test_setup_game);
 	MU_RUN_TEST(test_setup_board);
 	MU_RUN_TEST(test_setup_piece);
@@ -426,7 +426,6 @@ MU_TEST_SUITE(test_suite) {
 	MU_RUN_TEST(test_delete_clusters_2);
 	MU_RUN_TEST(test_move_column);
 	MU_RUN_TEST(test_apply_gravity);
-     */
     MU_RUN_TEST(test_scores);
 }
 
