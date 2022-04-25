@@ -32,8 +32,6 @@
 #define DIR_SW (BOARD_COLS - 1)
 #define DIR_SE (BOARD_COLS + 1)
 
-#define DEFAULT_INTERVAL 500
-
 #define MAX_CLUSTERS (BOARD_CELLS / PIECE_SIZE)
 
 typedef unsigned short ushort_t;
@@ -67,6 +65,7 @@ typedef struct {
 } piece_t;
 
 typedef struct {
+    unsigned long score;
 	int difficulty;
 	unsigned int interval;
 	board_t *board;
@@ -116,6 +115,9 @@ inspect_board (board_t *board, ushort_t x, ushort_t y);
 
 int
 delete_clusters (board_t *board, results_t *results);
+
+unsigned long
+calc_points(results_t *results, int level, int chain);
 
 void
 find_clusters (board_t *board, results_t *results);

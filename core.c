@@ -40,11 +40,11 @@ init_board (board_t *board, board_t *source_board)
 void
 init_game (game_t *game, int difficulty)
 {
+    game->score = 0;
 	game->difficulty = difficulty;
 	game->board = AllocMem (sizeof (*(game->board)), MEMF_PUBLIC);
 	game->next = AllocMem (sizeof (*(game->next)), MEMF_PUBLIC);
 	game->current = AllocMem (sizeof (*(game->current)), MEMF_PUBLIC);
-	game->interval = DEFAULT_INTERVAL;
 
 	init_board (game->board, NULL);
 	init_rand_piece (game->next, difficulty);
@@ -246,10 +246,21 @@ move_column (board_t *board, int sc, int l, int tc)
 }
 
 void
+init_cluster(cluster_t *cluster)
+{
+    cluster->count = 0;
+    for (int i = 0; i < BOARD_CELLS; ++i) {
+        cluster->indexes[i] = 0;
+    }
+}
+
+void
 init_results (results_t *results)
 {
+    cluster_t *cluster;
+
 	for (int i = 0; i < MAX_DIFFICULTY + 1; i++) {
-		results->clusters[i].count = 0;
+        init_cluster(&(results->clusters[i]));
 	}
 	for (int l = 0; l < BOARD_CELLS; l++) {
 		results->targets[l] = 0;
@@ -272,8 +283,8 @@ append (cluster_t *cls, ushort_t col, results_t *res)
 }
 
 static void
-search (ushort_t col, int idx, board_t *board, int d, results_t *results,
-		cluster_t *cls)
+search (ushort_t color, int idx, board_t *board, int d, results_t *results,
+        cluster_t *cls)
 {
 	cluster_t *tmp_cls;
 	int ldx = idx + d;
@@ -287,21 +298,33 @@ search (ushort_t col, int idx, board_t *board, int d, results_t *results,
 	}
 	tmp_cls->indexes[tmp_cls->count++] = idx;
 
-	if (ldx >= 0 && ldx < BOARD_CELLS && (*board)[ldx] == col) {
+	if (ldx >= 0 && ldx < BOARD_CELLS && (*board)[ldx] == color) {
 		if (
 			!((d == DIR_E) && ((idx / BOARD_COLS) != (ldx / BOARD_COLS))) &&
 			!((d == DIR_SE) && ((idx / BOARD_COLS + 1) != (ldx / BOARD_COLS)))
 			&&
 			!((d == DIR_SW) && ((idx / BOARD_COLS + 1) != (ldx / BOARD_COLS)))
 			) {
-			search (col, ldx, board, d, results, tmp_cls);
+			search (color, ldx, board, d, results, tmp_cls);
 		}
 	}
 
 	if (tmp_cls->count >= PIECE_SIZE) {
-		append (tmp_cls, col, results);
+		append (tmp_cls, color, results);
 		tmp_cls->count = 0;
 	}
+}
+
+unsigned long
+calc_points(results_t *results, int level, int chain)
+{
+    unsigned long points = 0;
+
+    for (int i = 0; i < MAX_DIFFICULTY; i++) {
+        points += results->clusters[i].count;
+    }
+
+    return points * (level + 1) * (chain + 1) * 30;
 }
 
 void
