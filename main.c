@@ -8,7 +8,7 @@
 #include "core.h"
 
 WINDOW *win;
-int start_x = 0, start_y = 0, debug = 1;
+int start_x = 0, start_y = 0, debug = 0;
 unsigned long last_ts = 0;
 
 void draw_rect (int x1, int y1, int x2, int y2)
@@ -124,17 +124,21 @@ static void
 display_deleted(results_t *results)
 {
     int do_pause = 0;
+    div_t d;
 
     for (int i = 0; i < BOARD_CELLS; i++) {
         if (results->targets[i] > 0) {
             do_pause = 1;
-            mvaddch(start_y + (i / BOARD_COLS),
-                    16, '*');
+            d = div(i, BOARD_COLS);
+            mvaddch(start_y + d.quot,
+                    start_x + d.rem,
+                    '*');
         }
     }
 
     if (do_pause) {
-        usleep(100000);
+        refresh();
+        usleep(250000);
     }
 }
 
@@ -184,6 +188,7 @@ draw_debug (game_t *game)
     if (debug) {
         mvprintw (2, 1, "piece coords: \t%d, %d ",
                   game->current->x, game->current->y);
+        mvprintw (3, 1, "st: \t%d, %d ", start_x, start_y);
     }
 }
 
@@ -203,7 +208,6 @@ play_game (void)
 		draw_debug (game);
 		process_keys (game);
 		refresh();
-		erase_piece (game->current);
 	} while (game_tick (game));
 
 	free_game (game);
