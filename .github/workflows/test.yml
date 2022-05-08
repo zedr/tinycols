@@ -11,9 +11,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v2
-      - name: install dependencies
-        run: sudo apt install -y ncurses-dev libncurses-dev
-      - name: make
-        run: make
       - name: make test
         run: make test
+      - name: test
+        run: ./test
