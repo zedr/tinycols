@@ -149,6 +149,8 @@ MU_TEST(test_apply_gravity) {
             mu_assert(bb[i] == ab[i], s);
         }
     }
+
+	free(s);
 }
 
 MU_TEST(test_move_column) {
@@ -356,9 +358,7 @@ MU_TEST(test_piece_place) {
 
 MU_TEST(test_piece_pick) {
     game_t *game = AllocMem(sizeof(*game), 0);
-    game->current = AllocMem(sizeof(*(game->current)), 0);
-    game->next = AllocMem(sizeof(*(game->next)), 0);
-    game->difficulty = DEFAULT_DIFFICULTY;
+	init_game (game, DEFAULT_DIFFICULTY);
 
     game->current->jewels[0] = ORANGE;
     game->current->jewels[1] = BLUE;
@@ -373,7 +373,8 @@ MU_TEST(test_piece_pick) {
     mu_check(game->current->jewels[1] == PURPLE);
     mu_check(game->current->jewels[2] == YELLOW);
 
-    free_game(game);
+	free_game (game);
+
 }
 
 MU_TEST(test_setup_piece) {
