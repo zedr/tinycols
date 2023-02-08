@@ -1,0 +1,17 @@
+name: TinyCols C tests
+
+on:
+  push:
+      branches: [ main ]
+  pull_request:
+      branches: [ main ]
+
+jobs:
+  build-and-test:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: make test
+        run: make test
+      - name: test
+        run: ./build/test

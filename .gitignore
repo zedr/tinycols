@@ -1,0 +1,5 @@
+build/
+*-debug/
+old
+_*.c
+_*.h
