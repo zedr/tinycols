@@ -55,6 +55,7 @@ static void run(void)
 
 	while (gm->status != GAME_OVER) {
 		enum result res = UNKNOWN;
+		unsigned int count = 0;
 		draw_game(gm, 0, 0);
 		draw_debug(gm, 10, 10);
 		if (time(NULL) > ts) {
@@ -63,17 +64,18 @@ static void run(void)
 		}
 		if (res == LANDED || process_keys(gm) == LANDED) {
 			if (piece_persist(&gm->current_piece, gm->grid)) {
-				score_t tmp = 0;
+				score_t tmp;
 				while ((tmp = grid_scan(gm->grid, tmp_res)) > 0) {
 					gm->score += tmp;
 					draw_stars(tmp_res,
 							   1, 1,
 							   gm->grid->cols, gm->grid->rows);
 					grid_remove_jewels(gm->grid, tmp_res);
-					unsigned int count = grid_detect_drops(gm->grid,
-														   drs,
-														   gm->grid->size);
-					grid_apply_drops(gm->grid, drs, count);
+					while ((count = grid_detect_drops(gm->grid,
+													  drs,
+													  gm->grid->size)) > 0) {
+						grid_apply_drops(gm->grid, drs, count);
+					}
 					refresh();
 					usleep(250000);
 					draw_jewels(gm->grid->cells,
