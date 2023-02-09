@@ -30,6 +30,7 @@ process_keys(struct game *gm)
 			break;
 	}
 
+	flushinp();
 	return res;
 }
 
@@ -85,14 +86,15 @@ static void run(void)
 				}
 				game_cycle_piece(gm);
 				grid_position_piece(gm->grid, &gm->current_piece);
-				flushinp();
 			} else {
 				gm->status = GAME_OVER;
 			}
 		}
+		flushinp();
 		refresh();
 		usleep(100);
 	}
+	usleep(1000000);
 	teardown_gfx(win);
 	game_free(gm);
 	free(tmp_res);
