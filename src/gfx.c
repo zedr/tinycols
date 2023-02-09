@@ -33,19 +33,18 @@ static void draw_rect(int x1, int y1, int x2, int y2)
 	mvaddch(y2, x2, ACS_LRCORNER);;
 }
 
-void draw_jewels(const uint8_t *jewels, int x, int y, int w, int h)
+void draw_grid_jewels(const struct grid *gr, int x, int y)
 {
-	int n_jewels = w * h;
-	for (int i = 0; i < n_jewels; i++) {
-		div_t d = div(i, w);
-		int jwl = jewels[i];
+	for (int i = 0; i < gr->size; i++) {
+		div_t d = div(i, gr->cols);
+		int jwl = gr->cells[i];
 		mvaddch(y + d.quot, x + d.rem, (jwl) ? jwl + '0' : ' ');
 	}
 }
 
-static void draw_grid(struct grid *gr)
+void draw_grid(struct grid *gr, int offset_x, int offset_y)
 {
-	draw_rect(0, 0, gr->cols + 1, gr->rows + 1);
+	draw_rect(offset_x, offset_y, gr->cols + 1, gr->rows + 1);
 }
 
 void draw_piece(struct piece *pc, int offset_x, int offset_y)
@@ -60,24 +59,28 @@ void draw_piece(struct piece *pc, int offset_x, int offset_y)
 	}
 }
 
+void draw_frame(struct game *gm, int offset_x, int offset_y)
+{
+	int x = offset_x + gm->grid->cols + 2;
+	draw_grid(gm->grid, offset_x, offset_y);
+	draw_rect(x, offset_y, x + 2, offset_y + 4);
+}
+
 void draw_game(struct game *gm, int offset_x, int offset_y)
 {
 	struct grid *gr = gm->grid;
 
-	draw_grid(gr);
-	draw_jewels(gr->cells, offset_x + 1, offset_y + 1, gr->cols, gr->rows);
-	draw_piece(&gm->current_piece, offset_x + 1, offset_y + 1);
+	draw_grid_jewels(gr, offset_x + 1, offset_y + 1);
 	draw_piece(&gm->next_piece, offset_x + gr->cols + 3, offset_y + 1);
 }
 
-void draw_stars(const uint8_t *result, int x, int y, int w, int h)
+void draw_stars(const uint8_t *result, struct grid *gr, int x, int y)
 {
-	int n_jewels = w * h;
-	for (int i = 0; i < n_jewels; i++) {
-		div_t d = div(i, w);
+	for (int i = 0; i < gr->size; i++) {
+		div_t d = div(i, gr->cols);
 		int clr = result[i];
 		if (clr) {
-			mvaddch(y + d.quot, x + d.rem, '*');
+			mvaddch(y + d.quot + 1, x + d.rem + 1, '*');
 		}
 	}
 }
@@ -94,5 +97,6 @@ void draw_debug(struct game *g, int x, int y)
 		mvprintw(y + 2, x, "under piece:\t%d ",
 				 g->grid->cells[idx]);
 	}
-	mvprintw(y + 3, x, "score:\t%d ", g->score);
+	mvprintw(y + 3, x, "score:\t%lu ", g->score);
+	mvprintw(y + 4, x, "jewels:\t%lu ", g->jewels_removed);
 }

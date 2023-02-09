@@ -261,10 +261,12 @@ MU_TEST(test_piece_position_ok_1)
 	struct piece pc = {
 		.row = 0,
 		.col = 0,
+		.status = UNKNOWN,
 		.colors = {ORANGE, BLUE, YELLOW}
 	};
 
 	mu_check(piece_persist(&pc, gr));
+	mu_assert_int_eq(PERSISTED, pc.status);
 	mu_assert_int_eq(ORANGE, test_get_cell(gr, 0, 0));
 	mu_assert_int_eq(BLUE, test_get_cell(gr, 1, 0));
 	mu_assert_int_eq(YELLOW, test_get_cell(gr, 2, 0));
@@ -308,15 +310,35 @@ MU_TEST(test_piece_move_ok_1)
 	};
 
 	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, DOWN, gr));
+	mu_assert_int_eq(MOVED, pc.status);
 	mu_assert_int_eq(1, pc.row);
 	pc.row = gr->rows - PIECE_SIZE;
 	mu_assert_int_eq(LANDED, piece_move_in_grid(&pc, DOWN, gr));
+	mu_assert_int_eq(LANDED, pc.status);
 	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, RIGHT, gr));
+	mu_assert_int_eq(MOVED, pc.status);
 	mu_assert_int_eq(1, pc.col);
 	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, LEFT, gr));
+	mu_assert_int_eq(MOVED, pc.status);
 	mu_assert_int_eq(0, pc.col);
 
 	free(gr);
+}
+
+MU_TEST(test_piece_move_ok_2)
+{
+	struct grid *gr = grid_alloc(13, 6);
+	grid_init(gr);
+
+	struct piece pc = {
+		.row = 0,
+		.col = 0,
+		.colors = {ORANGE, BLUE, YELLOW}
+	};
+	grid_position_piece(gr, &pc);
+	mu_assert_int_eq(-2, pc.row);
+	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, DOWN, gr));
+	mu_assert_int_eq(-1, pc.row);
 }
 
 MU_TEST(test_piece_move_fail_1)
@@ -386,6 +408,7 @@ MU_TEST(test_game_init_1)
 	mu_assert_int_eq(0, gm->score);
 	mu_assert_int_eq(GAME_DEFAULT_COLOR_MAX, gm->color_max);
 	mu_assert_int_eq(GAME_READY, gm->status);
+	mu_assert_int_eq(UNKNOWN, gm->current_piece.status);
 	mu_check(gm->current_piece.colors[0] > 0);
 	mu_check(gm->current_piece.colors[0] <= COLOR_MAX);
 	mu_check(gm->current_piece.colors[1] > 0);
@@ -423,6 +446,7 @@ MU_TEST_SUITE(test_suite_piece)
 	MU_RUN_TEST(test_piece_position_ok_1);
 	MU_RUN_TEST(test_piece_position_fail_1);
 	MU_RUN_TEST(test_piece_move_ok_1);
+	MU_RUN_TEST(test_piece_move_ok_2);
 	MU_RUN_TEST(test_piece_move_fail_1);
 	MU_RUN_TEST(test_piece_rotate_1);
 }

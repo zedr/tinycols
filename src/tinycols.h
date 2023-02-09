@@ -35,9 +35,10 @@ enum direction {
 
 enum result {
 	UNKNOWN,
-	BLOCKED,
 	MOVED,
-	LANDED
+	BLOCKED,
+	LANDED,
+	PERSISTED
 };
 
 enum game_status {
@@ -49,13 +50,14 @@ enum game_status {
 struct grid {
 	int cols;
 	int rows;
-	unsigned int size;
+	int size;
 	uint8_t cells[];
 };
 
 struct piece {
 	int row;
 	int col;
+	enum result status;
 	enum color colors[PIECE_SIZE];
 };
 
@@ -69,6 +71,7 @@ struct drop {
 struct game {
 	unsigned short level;
 	unsigned long score;
+	unsigned long jewels_removed;
 	enum game_status status;
 	enum color color_max;
 	struct piece current_piece;
@@ -84,7 +87,7 @@ void grid_init(struct grid *gr);
 
 score_t grid_scan(const struct grid *gr, uint8_t *result);
 
-void grid_remove_jewels(struct grid *gr, const uint8_t *jewels);
+uint16_t grid_remove_jewels(struct grid *gr, const uint8_t *jewels);
 
 unsigned int
 grid_detect_drops(struct grid *gr, struct drop *drs, unsigned int max_drops);
@@ -106,7 +109,8 @@ piece_move_in_grid(struct piece *pc, enum direction dir, struct grid *gr);
 // Test functions
 enum color test_get_cell(struct grid *gr, int row, int col);
 
-void test_set_cell(struct grid *gr, int row, int col, enum color clr);
+void
+test_set_cell(struct grid *gr, int row, int col, enum color clr);
 
 //  Game functions
 struct game *game_alloc(void);

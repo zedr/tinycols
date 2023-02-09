@@ -25,7 +25,7 @@ struct grid *grid_alloc(uint8_t rows, uint8_t cols)
 
 static inline enum color get_cell(struct grid *gr, int row, int col)
 {
-	return gr->cells[(row * gr->cols) + col];
+	return gr->cells[(row *  gr->cols) + col];
 }
 
 static inline void set_cell(struct grid *gr, int row, int col, enum color clr)
@@ -122,13 +122,18 @@ score_t grid_scan(const struct grid *gr, uint8_t *result)
 	return score;
 }
 
-void grid_remove_jewels(struct grid *gr, const uint8_t *jewels)
+uint16_t grid_remove_jewels(struct grid *gr, const uint8_t *jewels)
 {
+	uint16_t removed = 0;
+
 	for (int i = 0; i < gr->size; i++) {
 		if (jewels[i] != TRANSPARENT) {
 			gr->cells[i] = TRANSPARENT;
+			removed++;
 		}
 	}
+
+	return removed;
 }
 
 static inline void init_drops(struct drop *drs, unsigned int max_drops)
@@ -224,6 +229,8 @@ bool piece_persist(struct piece *pc, struct grid *gr)
 		set_cell(gr, pc->row + i, pc->col, pc->colors[i]);
 	}
 
+	pc->status = PERSISTED;
+
 	return true;
 }
 
@@ -260,14 +267,13 @@ piece_move_in_grid(struct piece *pc, enum direction dir, struct grid *gr)
 	switch (dir) {
 		case DOWN: {
 			if (pc->row >= gr->rows - PIECE_SIZE) {
-				return LANDED;
+				return (pc->status = LANDED);
 			} else if (
-				get_cell(gr, pc->row + PIECE_SIZE, pc->col)
-				!= TRANSPARENT) {
-				return LANDED;
+				get_cell(gr, pc->row + PIECE_SIZE, pc->col) != TRANSPARENT) {
+				return (pc->status = LANDED);
 			} else if (pc->row < gr->rows - 1) {
 				pc->row++;
-				return MOVED;
+				return (pc->status = MOVED);
 			}
 			break;
 		}
@@ -276,7 +282,7 @@ piece_move_in_grid(struct piece *pc, enum direction dir, struct grid *gr)
 				break;
 			} else {
 				pc->col--;
-				return MOVED;
+				return (pc->status = MOVED);
 			}
 			break;
 		}
@@ -285,7 +291,7 @@ piece_move_in_grid(struct piece *pc, enum direction dir, struct grid *gr)
 				break;
 			} else {
 				pc->col++;
-				return MOVED;
+				return (pc->status = MOVED);
 			}
 			break;
 		}
@@ -293,7 +299,7 @@ piece_move_in_grid(struct piece *pc, enum direction dir, struct grid *gr)
 			break;
 	}
 
-	return BLOCKED;
+	return (pc->status = BLOCKED);
 }
 
 bool grid_position_piece(struct grid *gr, struct piece *pc)
@@ -326,7 +332,7 @@ struct game *game_alloc(void)
 
 void game_cycle_piece(struct game *gm)
 {
-	for (int i = 0; i < PIECE_SIZE; i++ ) {
+	for (int i = 0; i < PIECE_SIZE; i++) {
 		gm->current_piece.colors[i] = gm->next_piece.colors[i];
 	}
 	piece_randomize(&gm->next_piece);

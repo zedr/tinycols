@@ -18,7 +18,8 @@ build/test: build
 		lib/*.c tests/test_tinycols.c src/tinycols.c -o build/test
 
 build/tinycols: build
-	@${CC} ${CFLAGS} -std=gnu99 -lncurses src/*.c -o build/tinycols
+	@${CC} ${CFLAGS} -std=gnu99 -lncurses -o build/tinycols \
+		src/gfx.c src/tinycols.c src/main.c
 
 test: build/test
 
