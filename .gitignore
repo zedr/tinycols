@@ -3,3 +3,4 @@ build/
 old
 _*.c
 _*.h
+.clang-format
