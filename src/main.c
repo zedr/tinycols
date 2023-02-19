@@ -7,6 +7,7 @@
 #include "gfx.h"
 
 #define TICK_TIME 10000
+#define MAX_TIMER 179
 
 WINDOW *win;
 uint8_t tmp_res[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
@@ -92,7 +93,7 @@ static void run(void)
 	draw_frame(gm, 0, 0);
 
 	struct timeval time_start, time_end;
-	uint16_t timer = 0;
+	uint8_t timer = 0;
 	while (gm->status != GAME_OVER) {
 		// Time Start
 		gettimeofday(&time_start, NULL);
@@ -103,7 +104,7 @@ static void run(void)
 		}
 
 		// Process game logic
-		if (timer % 180 == 0) {
+		if (timer == MAX_TIMER) {
 			game_tick(gm);
 		}
 
@@ -122,6 +123,9 @@ static void run(void)
 		gettimeofday(&time_end, NULL);
 		usleep(time_start.tv_usec + TICK_TIME - time_end.tv_usec);
 		timer++;
+		if (timer > MAX_TIMER) {
+			timer = 0;
+		}
 	}
 
 	usleep(1000000);
