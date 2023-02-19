@@ -97,6 +97,12 @@ void draw_debug(struct game *g, int x, int y)
 		mvprintw(y + 2, x, "under piece:\t%d ",
 				 g->grid->cells[idx]);
 	}
-	mvprintw(y + 3, x, "score:\t%lu ", g->score);
-	mvprintw(y + 4, x, "jewels:\t%lu ", g->jewels_removed);
+	mvprintw(y + 3, x, "level:\t%lu ", g->level);
+	mvprintw(y + 4, x, "score:\t%lu ", g->score);
+	if (g->last_score > 0) {
+		mvprintw(y + 5, x, "      \t+%lu ", g->last_score);
+	} else {
+		mvprintw(y + 5, x, "      \t     ");
+	}
+	mvprintw(y + 6, x, "jewels:\t%lu ", g->jewels_removed);
 }

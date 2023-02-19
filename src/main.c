@@ -42,8 +42,10 @@ static unsigned int get_piece_time(struct game *gm)
 }
  */
 
-static void game_tick(struct game *gm)
+void game_tick(struct game *gm)
 {
+	score_t tmp_score = 0;
+
 	if (gm->current_piece.status == PERSISTED) {
 		grid_remove_jewels(gm->grid, tmp_res);
 		unsigned int count = 0;
@@ -68,7 +70,6 @@ static void game_tick(struct game *gm)
 
 	// Scan the playing field for matches
 	if (gm->current_piece.status == PERSISTED) {
-		score_t tmp_score = 0;
 		if ((tmp_score = grid_scan(gm->grid, tmp_res)) > 0) {
 			gm->score += tmp_score;
 		} else {
@@ -77,6 +78,8 @@ static void game_tick(struct game *gm)
 			gm->current_piece.status = UNKNOWN;
 		}
 	}
+
+	gm->last_score = tmp_score;
 }
 
 static void run(void)
@@ -116,7 +119,7 @@ static void run(void)
 		} else {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
-		draw_debug(gm, 10, 10);
+		draw_debug(gm, 10, 7);
 		refresh();
 
 		// Time End

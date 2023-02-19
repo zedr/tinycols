@@ -70,7 +70,8 @@ struct drop {
 
 struct game {
 	unsigned short level;
-	unsigned long score;
+	score_t score;
+	score_t last_score;
 	unsigned long jewels_removed;
 	enum game_status status;
 	enum color color_max;
