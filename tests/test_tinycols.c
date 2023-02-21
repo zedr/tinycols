@@ -339,6 +339,8 @@ MU_TEST(test_piece_move_ok_2)
 	mu_assert_int_eq(-2, pc.row);
 	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, DOWN, gr));
 	mu_assert_int_eq(-1, pc.row);
+
+	free(gr);
 }
 
 MU_TEST(test_piece_move_fail_1)

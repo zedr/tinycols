@@ -492,6 +492,8 @@ void game_init(struct game *gm, unsigned int level, enum color color_max)
 	game_cycle_piece(gm);
 	grid_init(gm->grid);
 	grid_position_piece(gm->grid, &gm->current_piece);
+	gm->current_piece.status = UNKNOWN;
+	gm->next_piece.status = UNKNOWN;
 }
 
 /**
