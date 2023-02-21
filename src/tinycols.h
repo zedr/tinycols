@@ -14,6 +14,9 @@
 
 typedef uint_least16_t score_t;
 
+/**
+ * color - All the colors of a jewel piece.
+ */
 enum color {
 	TRANSPARENT,
 	PURPLE,
@@ -26,6 +29,9 @@ enum color {
 
 #define COLOR_MAX YELLOW
 
+/**
+ * direction - The direction a piece can take.
+ */
 enum direction {
 	UP,
 	DOWN,
@@ -33,6 +39,9 @@ enum direction {
 	RIGHT
 };
 
+/**
+ * result - The result of an action affecting a piece.
+ */
 enum result {
 	UNKNOWN,
 	MOVED,
@@ -41,12 +50,22 @@ enum result {
 	PERSISTED
 };
 
-enum game_status {
+/**
+ * game_status - The possible states a game can take.
+ */
+enum game_state {
 	GAME_READY,
-	GAME_ACTIVE,
 	GAME_OVER
 };
 
+/**
+ * grid - The grid of a game.
+ *
+ * @param cols: The number of columns in this grid.
+ * @param rows: The number of rows in this grid.
+ * @param size: The size (number of cells) of this grid, i.e. rows * cols.
+ * @param cells: The content of the cells of this grid.
+ */
 struct grid {
 	int cols;
 	int rows;
@@ -54,6 +73,14 @@ struct grid {
 	uint8_t cells[];
 };
 
+/**
+ * piece - A jewel piece.
+ *
+ * @param row: The grid row where the top jewel of this piece is located.
+ * @param col: The grid column where the top jewel of this piece is located.
+ * @param status: The status of this piece, based on the result of the previous
+ *                result of a movement.
+ */
 struct piece {
 	int row;
 	int col;
@@ -61,19 +88,41 @@ struct piece {
 	enum color colors[PIECE_SIZE];
 };
 
+/**
+ * drop - A gap in the jewels that will cause the topmost to drop down
+ *
+ * @param row: The grid row the top of the group to drop.
+ * @param col: The grid column the top of the group to drop.
+ * @param n: The number of blocks to drop (that form the group).
+ * @param h: The height of the drop.
+ */
 struct drop {
-	int col; // grid x location of the group to drop
-	int row; // grid y location of the top of the group to drop
-	int n; // number of blocks to drop (that form the group)
-	int h; // height of the drop
+	int row;
+	int col;
+	int n;
+	int h;
 };
 
+/**
+ * game - A game of Tiny Cols
+ *
+ * @param level: The current difficulty level of the game (starts from zero).
+ * @param score: The current total score.
+ * @param last_score: The last sub-score that was recorded in-game.
+ * @param jewels_removed: The total number of jewels that were removed.
+ * @param status: The current game status.
+ * @param color_max: The maximum color that can be used in-game.
+ *                   This is linked to the difficulty level.
+ * @param current_piece: The current in-game piece, controlled by the player.
+ * @param next_piece: The next piece to be played.
+ * @param grid: The game grid.
+ */
 struct game {
 	unsigned short level;
 	score_t score;
 	score_t last_score;
-	unsigned long jewels_removed;
-	enum game_status status;
+	uint_least16_t jewels_removed;
+	enum game_state status;
 	enum color color_max;
 	struct piece current_piece;
 	struct piece next_piece;
@@ -91,7 +140,8 @@ score_t grid_scan(const struct grid *gr, uint8_t *result);
 uint16_t grid_remove_jewels(struct grid *gr, const uint8_t *jewels);
 
 unsigned int
-grid_detect_drops(struct grid *gr, struct drop *drs, unsigned int max_drops);
+grid_detect_drops(const struct grid *gr, struct drop *drs,
+				  unsigned int max_drops);
 
 void
 grid_apply_drops(struct grid *gr, const struct drop *drs, unsigned int n_drops);
@@ -105,10 +155,11 @@ bool piece_persist(struct piece *pc, struct grid *gr);
 void piece_rotate(struct piece *pc, enum direction dir);
 
 enum result
-piece_move_in_grid(struct piece *pc, enum direction dir, struct grid *gr);
+piece_move_in_grid(struct piece *pc, enum direction dir,
+				   const struct grid *gr);
 
 // Test functions
-enum color test_get_cell(struct grid *gr, int row, int col);
+enum color test_get_cell(const struct grid *gr, int row, int col);
 
 void
 test_set_cell(struct grid *gr, int row, int col, enum color clr);
