@@ -87,15 +87,13 @@ void draw_stars(const uint8_t *result, struct grid *gr, int x, int y)
 
 void draw_debug(struct game *g, int x, int y)
 {
-	mvprintw(y, x, "grid size:\t%d x %d ",
-			 g->grid->cols, g->grid->rows);
+	mvprintw(y, x, "grid size:\t%d x %d ", g->grid->cols, g->grid->rows);
 	mvprintw(y + 1, x, "piece coords:\t%d, %d ",
 			 g->current_piece.col, g->current_piece.row);
 	struct piece pc = g->current_piece;
 	int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;
 	if (idx > 0 && idx < g->grid->cols * g->grid->rows) {
-		mvprintw(y + 2, x, "under piece:\t%d ",
-				 g->grid->cells[idx]);
+		mvprintw(y + 2, x, "under piece:\t%d ", g->grid->cells[idx]);
 	}
 	mvprintw(y + 3, x, "level:\t%lu ", g->level);
 	mvprintw(y + 4, x, "score:\t%lu ", g->score);
