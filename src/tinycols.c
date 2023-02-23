@@ -108,11 +108,13 @@ score_t grid_scan(const struct grid *gr, uint8_t *result)
 		if (color != TRANSPARENT) {
 			// Horizontal check
 			unsigned int count = 1;
-			unsigned int lim = ((idx / gr->cols) * gr->cols) + gr->cols;
+			unsigned int lim =
+				((idx / gr->cols) * gr->cols) + gr->cols;
 			for (int i = 1, ldx; (ldx = idx + i) < lim; i++) {
 				if (gr->cells[ldx] == color) {
 					count++;
-				} else break;
+				} else
+					break;
 			}
 			if (count >= PIECE_SIZE) {
 				score += calc_score(count);
@@ -122,10 +124,12 @@ score_t grid_scan(const struct grid *gr, uint8_t *result)
 			}
 			// Vertical check
 			count = 1;
-			for (int i = 1, ldx; (ldx = idx + i * gr->cols) < size; i++) {
+			for (int i = 1, ldx; (ldx = idx + i * gr->cols) < size;
+			     i++) {
 				if (gr->cells[ldx] == color) {
 					count++;
-				} else break;
+				} else
+					break;
 			}
 			if (count >= PIECE_SIZE) {
 				score += calc_score(count);
@@ -138,15 +142,16 @@ score_t grid_scan(const struct grid *gr, uint8_t *result)
 			for (int i = 1, row = idx / gr->cols; i < size; i++) {
 				const int ldx = idx - i + (i * gr->cols);
 				if ((ldx / gr->cols == row + i) &&
-					ldx < size &&
-					(gr->cells[ldx] == color)) {
+				    ldx < size && (gr->cells[ldx] == color)) {
 					count++;
-				} else break;
+				} else
+					break;
 			}
 			if (count >= PIECE_SIZE) {
 				score += calc_score(count);
 				for (int i = 0; i < count; i++) {
-					result[idx - i + (i * gr->cols)] = color;
+					result[idx - i + (i * gr->cols)] =
+						color;
 				}
 			}
 			// Diagonal check: right, down
@@ -154,15 +159,16 @@ score_t grid_scan(const struct grid *gr, uint8_t *result)
 			for (int i = 1, row = idx / gr->cols; i < size; i++) {
 				const int ldx = idx + i * gr->cols + i;
 				if ((ldx / gr->cols == row + i) &&
-					ldx < size &&
-					(gr->cells[ldx] == color)) {
+				    ldx < size && (gr->cells[ldx] == color)) {
 					count++;
-				} else break;
+				} else
+					break;
 			}
 			if (count >= PIECE_SIZE) {
 				score += calc_score(count);
 				for (int i = 0; i < count; i++) {
-					result[idx + i + (i * gr->cols)] = color;
+					result[idx + i + (i * gr->cols)] =
+						color;
 				}
 			}
 		}
@@ -221,9 +227,8 @@ static inline void init_drops(struct drop *drs, unsigned int max_drops)
  *                   array.
  * @return The number of drops detected.
  */
-unsigned int
-grid_detect_drops(const struct grid *gr, struct drop *drs,
-				  unsigned int max_drops)
+unsigned int grid_detect_drops(const struct grid *gr, struct drop *drs,
+			       unsigned int max_drops)
 {
 	int n = 0;
 	int n_drops = 0;
@@ -240,11 +245,14 @@ grid_detect_drops(const struct grid *gr, struct drop *drs,
 			const int idx = cols * (rows - l) - i - 1;
 			const int cell = (gr->cells)[idx];
 			if (cell == TRANSPARENT) {
-				if (block_end != NOT_FOUND && gap_end != NOT_FOUND) {
+				if (block_end != NOT_FOUND &&
+				    gap_end != NOT_FOUND) {
 					(drs + n)->col = cols - i - 1;
 					(drs + n)->row = (idx + cols) / cols;
-					(drs + n)->n = (block_end / cols) - (idx / cols);
-					(drs + n)->h = (gap_end / cols) - (block_end / cols);
+					(drs + n)->n = (block_end / cols) -
+						       (idx / cols);
+					(drs + n)->h = (gap_end / cols) -
+						       (block_end / cols);
 					n++;
 					n_drops++;
 					gap_end = NOT_FOUND;
@@ -262,7 +270,8 @@ grid_detect_drops(const struct grid *gr, struct drop *drs,
 		// Clean up column
 		if (block_end != NOT_FOUND && gap_end != NOT_FOUND) {
 			(drs + n)->col = cols - i - 1;
-			(drs + n)->row = 0; // Always zero, as we are at the top
+			(drs + n)->row = 0; // Always zero, as we are at the
+					    // top
 			(drs + n)->n = block_end / cols + 1;
 			(drs + n)->h = (gap_end / cols) - (block_end / cols);
 			n++;
@@ -282,8 +291,8 @@ grid_detect_drops(const struct grid *gr, struct drop *drs,
  * @param n_drops: The number of drops found.
  *                 Must be less that the number of drops in the above buffer.
  */
-void
-grid_apply_drops(struct grid *gr, const struct drop *drs, unsigned int n_drops)
+void grid_apply_drops(struct grid *gr, const struct drop *drs,
+		      unsigned int n_drops)
 {
 	for (int i = 0; i < n_drops; i++) {
 		const struct drop *dr = drs + i;
@@ -316,9 +325,8 @@ void piece_randomize(struct piece *pc)
  */
 bool piece_persist(struct piece *pc, struct grid *gr)
 {
-	if (pc->col < 0 || pc->row < 0 ||
-		pc->col >= gr->cols || pc->row >= gr->rows ||
-		pc->col + PIECE_SIZE > gr->rows) {
+	if (pc->col < 0 || pc->row < 0 || pc->col >= gr->cols ||
+	    pc->row >= gr->rows || pc->col + PIECE_SIZE > gr->rows) {
 		return false;
 	}
 
@@ -359,13 +367,14 @@ void piece_rotate(struct piece *pc, enum direction dir)
  * @param gr: The grid to inspect.
  * @return Is the piece blocked from movement in that direction?
  */
-static inline bool
-is_blocked(const struct piece *pc, enum direction dir, const struct grid *gr)
+static inline bool is_blocked(const struct piece *pc, enum direction dir,
+			      const struct grid *gr)
 {
 	int offset = (dir == RIGHT) ? 1 : -1;
 	for (int i = 0; i < PIECE_SIZE; i++) {
 		int row = pc->row + i;
-		if (row >= 0 && get_cell(gr, row, pc->col + offset) != TRANSPARENT) {
+		if (row >= 0 &&
+		    get_cell(gr, row, pc->col + offset) != TRANSPARENT) {
 			return true;
 		}
 	}
@@ -380,42 +389,42 @@ is_blocked(const struct piece *pc, enum direction dir, const struct grid *gr)
  * @param gr: The grid to inspect.
  * @return The outcome of the movement
  */
-enum result
-piece_move_in_grid(struct piece *pc, enum direction dir, const struct grid *gr)
+enum result piece_move_in_grid(struct piece *pc, enum direction dir,
+			       const struct grid *gr)
 {
 	switch (dir) {
-		case DOWN: {
-			if (pc->row >= gr->rows - PIECE_SIZE) {
-				return (pc->status = LANDED);
-			} else if (
-				get_cell(gr, pc->row + PIECE_SIZE, pc->col) != TRANSPARENT) {
-				return (pc->status = LANDED);
-			} else if (pc->row < gr->rows - 1) {
-				pc->row++;
-				return (pc->status = MOVED);
-			}
-			break;
+	case DOWN: {
+		if (pc->row >= gr->rows - PIECE_SIZE) {
+			return (pc->status = LANDED);
+		} else if (get_cell(gr, pc->row + PIECE_SIZE, pc->col) !=
+			   TRANSPARENT) {
+			return (pc->status = LANDED);
+		} else if (pc->row < gr->rows - 1) {
+			pc->row++;
+			return (pc->status = MOVED);
 		}
-		case LEFT: {
-			if (pc->col <= 0 || is_blocked(pc, LEFT, gr)) {
-				break;
-			} else {
-				pc->col--;
-				return (pc->status = MOVED);
-			}
+		break;
+	}
+	case LEFT: {
+		if (pc->col <= 0 || is_blocked(pc, LEFT, gr)) {
 			break;
+		} else {
+			pc->col--;
+			return (pc->status = MOVED);
 		}
-		case RIGHT: {
-			if (pc->col >= gr->cols - 1 || is_blocked(pc, RIGHT, gr)) {
-				break;
-			} else {
-				pc->col++;
-				return (pc->status = MOVED);
-			}
+		break;
+	}
+	case RIGHT: {
+		if (pc->col >= gr->cols - 1 || is_blocked(pc, RIGHT, gr)) {
 			break;
+		} else {
+			pc->col++;
+			return (pc->status = MOVED);
 		}
-		default:
-			break;
+		break;
+	}
+	default:
+		break;
 	}
 
 	return (pc->status = BLOCKED);
@@ -433,7 +442,7 @@ bool grid_position_piece(struct grid *gr, struct piece *pc)
 	pc->col = gr->cols / 2;
 	pc->row = 1 - PIECE_SIZE;
 	if (get_cell(gr, pc->row + 1, pc->col) != TRANSPARENT ||
-		get_cell(gr, pc->row + 2, pc->col) != TRANSPARENT) {
+	    get_cell(gr, pc->row + 2, pc->col) != TRANSPARENT) {
 		return false;
 	}
 

@@ -9,4 +9,3 @@ bool compare(uint8_t *first, uint8_t *second, int len)
 	}
 	return true;
 }
-

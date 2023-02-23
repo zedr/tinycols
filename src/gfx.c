@@ -30,7 +30,8 @@ static void draw_rect(int x1, int y1, int x2, int y2)
 	mvaddch(y1, x1, ACS_ULCORNER);
 	mvaddch(y2, x1, ACS_LLCORNER);
 	mvaddch(y1, x2, ACS_URCORNER);
-	mvaddch(y2, x2, ACS_LRCORNER);;
+	mvaddch(y2, x2, ACS_LRCORNER);
+	;
 }
 
 void draw_grid_jewels(const struct grid *gr, int x, int y)
@@ -52,9 +53,8 @@ void draw_piece(struct piece *pc, int offset_x, int offset_y)
 	for (int i = 0; i < PIECE_SIZE; i++) {
 		int y0 = pc->row + i;
 		if (y0 >= -1) {
-			mvaddch(offset_y + y0,
-					offset_x + pc->col,
-					pc->colors[i] + '0');
+			mvaddch(offset_y + y0, offset_x + pc->col,
+				pc->colors[i] + '0');
 		}
 	}
 }
@@ -88,8 +88,8 @@ void draw_stars(const uint8_t *result, struct grid *gr, int x, int y)
 void draw_debug(struct game *g, int x, int y)
 {
 	mvprintw(y, x, "grid size:\t%d x %d ", g->grid->cols, g->grid->rows);
-	mvprintw(y + 1, x, "piece coords:\t%d, %d ",
-			 g->current_piece.col, g->current_piece.row);
+	mvprintw(y + 1, x, "piece coords:\t%d, %d ", g->current_piece.col,
+		 g->current_piece.row);
 	struct piece pc = g->current_piece;
 	int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;
 	if (idx > 0 && idx < g->grid->cols * g->grid->rows) {

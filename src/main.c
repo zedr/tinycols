@@ -3,8 +3,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "tinycols.h"
 #include "gfx.h"
+#include "tinycols.h"
 
 #define TICK_TIME 10000
 #define MAX_TIMER 179
@@ -21,20 +21,20 @@ struct drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 void process_keys(struct game *gm)
 {
 	switch (wgetch(win)) {
-		case KEY_RIGHT:
-			piece_move_in_grid(&gm->current_piece, RIGHT, gm->grid);
-			break;
-		case KEY_LEFT:
-			piece_move_in_grid(&gm->current_piece, LEFT, gm->grid);
-			break;
-		case KEY_DOWN:
-			piece_move_in_grid(&gm->current_piece, DOWN, gm->grid);
-			break;
-		case KEY_UP:
-			piece_rotate(&gm->current_piece, UP);
-			break;
-		default:
-			break;
+	case KEY_RIGHT:
+		piece_move_in_grid(&gm->current_piece, RIGHT, gm->grid);
+		break;
+	case KEY_LEFT:
+		piece_move_in_grid(&gm->current_piece, LEFT, gm->grid);
+		break;
+	case KEY_DOWN:
+		piece_move_in_grid(&gm->current_piece, DOWN, gm->grid);
+		break;
+	case KEY_UP:
+		piece_rotate(&gm->current_piece, UP);
+		break;
+	default:
+		break;
 	}
 
 	flushinp();
@@ -50,9 +50,10 @@ void game_tick(struct game *gm)
 	score_t tmp_score = 0;
 
 	if (gm->current_piece.status == PERSISTED) {
-		gm ->jewels_removed += grid_remove_jewels(gm->grid, tmp_res);
+		gm->jewels_removed += grid_remove_jewels(gm->grid, tmp_res);
 		unsigned int count = 0;
-		while ((count = grid_detect_drops(gm->grid, tmp_drs, gm->grid->size))) {
+		while ((count = grid_detect_drops(gm->grid, tmp_drs,
+						  gm->grid->size))) {
 			grid_apply_drops(gm->grid, tmp_drs, count);
 		}
 	}
@@ -147,7 +148,7 @@ int main(int argc, char **argv)
 {
 	struct timeval time_now;
 	gettimeofday(&time_now, NULL);
-	srand((unsigned int) time_now.tv_usec); // NOLINT(cert-msc51-cpp)
+	srand((unsigned int)time_now.tv_usec); // NOLINT(cert-msc51-cpp)
 	run();
 	return 0;
 }

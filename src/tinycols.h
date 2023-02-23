@@ -1,8 +1,8 @@
 #ifndef TINYCOLS_H
 #define TINYCOLS_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define GAME_DEFAULT_LEVEL 0
 #define GAME_DEFAULT_COLOR_MAX YELLOW
@@ -17,46 +17,24 @@ typedef uint_least16_t score_t;
 /**
  * color - All the colors of a jewel piece.
  */
-enum color {
-	TRANSPARENT,
-	PURPLE,
-	ORANGE,
-	BLUE,
-	RED,
-	GREEN,
-	YELLOW
-};
+enum color { TRANSPARENT, PURPLE, ORANGE, BLUE, RED, GREEN, YELLOW };
 
 #define COLOR_MAX YELLOW
 
 /**
  * direction - The direction a piece can take.
  */
-enum direction {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
+enum direction { UP, DOWN, LEFT, RIGHT };
 
 /**
  * result - The result of an action affecting a piece.
  */
-enum result {
-	UNKNOWN,
-	MOVED,
-	BLOCKED,
-	LANDED,
-	PERSISTED
-};
+enum result { UNKNOWN, MOVED, BLOCKED, LANDED, PERSISTED };
 
 /**
  * game_status - The possible states a game can take.
  */
-enum game_state {
-	GAME_READY,
-	GAME_OVER
-};
+enum game_state { GAME_READY, GAME_OVER };
 
 /**
  * grid - The grid of a game.
@@ -139,12 +117,11 @@ score_t grid_scan(const struct grid *gr, uint8_t *result);
 
 uint16_t grid_remove_jewels(struct grid *gr, const uint8_t *jewels);
 
-unsigned int
-grid_detect_drops(const struct grid *gr, struct drop *drs,
-				  unsigned int max_drops);
+unsigned int grid_detect_drops(const struct grid *gr, struct drop *drs,
+			       unsigned int max_drops);
 
-void
-grid_apply_drops(struct grid *gr, const struct drop *drs, unsigned int n_drops);
+void grid_apply_drops(struct grid *gr, const struct drop *drs,
+		      unsigned int n_drops);
 
 bool grid_position_piece(struct grid *gr, struct piece *pc);
 
@@ -154,15 +131,13 @@ bool piece_persist(struct piece *pc, struct grid *gr);
 
 void piece_rotate(struct piece *pc, enum direction dir);
 
-enum result
-piece_move_in_grid(struct piece *pc, enum direction dir,
-				   const struct grid *gr);
+enum result piece_move_in_grid(struct piece *pc, enum direction dir,
+			       const struct grid *gr);
 
 // Test functions
 enum color test_get_cell(const struct grid *gr, int row, int col);
 
-void
-test_set_cell(struct grid *gr, int row, int col, enum color clr);
+void test_set_cell(struct grid *gr, int row, int col, enum color clr);
 
 //  Game functions
 struct game *game_alloc(void);
@@ -173,4 +148,4 @@ void game_cycle_piece(struct game *gm);
 
 void game_free(struct game *gm);
 
-#endif //TINYCOLS_H
+#endif // TINYCOLS_H

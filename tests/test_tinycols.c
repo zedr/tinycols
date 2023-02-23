@@ -54,121 +54,97 @@ MU_TEST(test_grid_set_cell_1)
 
 MU_TEST(test_grid_scan_1)
 {
-	uint8_t _cells[] = {
-		ORANGE, TRANSPARENT, TRANSPARENT,
-		ORANGE, GREEN, TRANSPARENT,
-		ORANGE, ORANGE, ORANGE
-	};
+	uint8_t _cells[] = {ORANGE, TRANSPARENT, TRANSPARENT,
+			    ORANGE, GREEN,	 TRANSPARENT,
+			    ORANGE, ORANGE,	 ORANGE};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
-	uint8_t expected_found[] = {
-		ORANGE, TRANSPARENT, TRANSPARENT,
-		ORANGE, TRANSPARENT, TRANSPARENT,
-		ORANGE, ORANGE, ORANGE
-	};
+	uint8_t expected_found[] = {ORANGE, TRANSPARENT, TRANSPARENT,
+				    ORANGE, TRANSPARENT, TRANSPARENT,
+				    ORANGE, ORANGE,	 ORANGE};
 	uint8_t found[9] = {TRANSPARENT};
-	score_t score = grid_scan(gr, (uint8_t *) &found);
-	mu_assert_int_eq(60, (unsigned long) score);
-	mu_check(compare((uint8_t *) &expected_found, (uint8_t *) &found, 9));
+	score_t score = grid_scan(gr, (uint8_t *)&found);
+	mu_assert_int_eq(60, (unsigned long)score);
+	mu_check(compare((uint8_t *)&expected_found, (uint8_t *)&found, 9));
 
 	free(gr);
 }
 
 MU_TEST(test_grid_scan_2)
 {
-	uint8_t _cells[] = {
-		ORANGE, GREEN, ORANGE,
-		ORANGE, ORANGE, TRANSPARENT,
-		GREEN, GREEN, ORANGE
-	};
+	uint8_t _cells[] = {ORANGE,	 GREEN, ORANGE, ORANGE, ORANGE,
+			    TRANSPARENT, GREEN, GREEN,	ORANGE};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
-	uint8_t expected_found[] = {
-		ORANGE, TRANSPARENT, TRANSPARENT,
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		TRANSPARENT, TRANSPARENT, ORANGE
-	};
+	uint8_t expected_found[] = {ORANGE,	 TRANSPARENT, TRANSPARENT,
+				    TRANSPARENT, ORANGE,      TRANSPARENT,
+				    TRANSPARENT, TRANSPARENT, ORANGE};
 	uint8_t found[9] = {TRANSPARENT};
-	unsigned long score = grid_scan(gr, (uint8_t *) &found);
+	unsigned long score = grid_scan(gr, (uint8_t *)&found);
 	mu_assert_int_eq(30, score);
-	mu_check(compare((uint8_t *) &expected_found, (uint8_t *) &found, 9));
+	mu_check(compare((uint8_t *)&expected_found, (uint8_t *)&found, 9));
 
 	free(gr);
 }
 
 MU_TEST(test_grid_scan_3)
 {
-	uint8_t _cells[] = {
-		GREEN, ORANGE, ORANGE,
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		TRANSPARENT, ORANGE, TRANSPARENT
-	};
+	uint8_t _cells[] = {GREEN,	 ORANGE, ORANGE,
+			    TRANSPARENT, ORANGE, TRANSPARENT,
+			    TRANSPARENT, ORANGE, TRANSPARENT};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
-	uint8_t expected_found[] = {
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		TRANSPARENT, ORANGE, TRANSPARENT
-	};
+	uint8_t expected_found[] = {TRANSPARENT, ORANGE, TRANSPARENT,
+				    TRANSPARENT, ORANGE, TRANSPARENT,
+				    TRANSPARENT, ORANGE, TRANSPARENT};
 	uint8_t found[9] = {TRANSPARENT};
-	unsigned long score = grid_scan(gr, (uint8_t *) &found);
+	unsigned long score = grid_scan(gr, (uint8_t *)&found);
 	mu_assert_int_eq(30, score);
-	mu_check(compare((uint8_t *) &expected_found, (uint8_t *) &found, 9));
+	mu_check(compare((uint8_t *)&expected_found, (uint8_t *)&found, 9));
 
 	free(gr);
 }
 
 MU_TEST(test_grid_scan_4)
 {
-	uint8_t _cells[] = {
-		TRANSPARENT, TRANSPARENT, ORANGE,
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		ORANGE, GREEN, GREEN
-	};
+	uint8_t _cells[] = {TRANSPARENT, TRANSPARENT, ORANGE,
+			    TRANSPARENT, ORANGE,      TRANSPARENT,
+			    ORANGE,	 GREEN,	      GREEN};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
-	uint8_t expected_found[] = {
-		TRANSPARENT, TRANSPARENT, ORANGE,
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		ORANGE, TRANSPARENT, TRANSPARENT
-	};
+	uint8_t expected_found[] = {TRANSPARENT, TRANSPARENT, ORANGE,
+				    TRANSPARENT, ORANGE,      TRANSPARENT,
+				    ORANGE,	 TRANSPARENT, TRANSPARENT};
 	uint8_t found[9] = {TRANSPARENT};
-	unsigned long score = grid_scan(gr, (uint8_t *) &found);
+	unsigned long score = grid_scan(gr, (uint8_t *)&found);
 	mu_assert_int_eq(30, score);
-	mu_check(compare((uint8_t *) &expected_found, (uint8_t *) &found, 9));
+	mu_check(compare((uint8_t *)&expected_found, (uint8_t *)&found, 9));
 
 	free(gr);
 }
 
 MU_TEST(test_grid_remove_jewels_1)
 {
-	uint8_t _cells[] = {
-		TRANSPARENT, ORANGE, ORANGE,
-		TRANSPARENT, ORANGE, GREEN,
-		ORANGE, ORANGE, GREEN
-	};
+	uint8_t _cells[] = {TRANSPARENT, ORANGE, ORANGE, TRANSPARENT, ORANGE,
+			    GREEN,	 ORANGE, ORANGE, GREEN};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
-	uint8_t expected[] = {
-		TRANSPARENT, TRANSPARENT, TRANSPARENT,
-		TRANSPARENT, TRANSPARENT, GREEN,
-		TRANSPARENT, TRANSPARENT, GREEN
-	};
+	uint8_t expected[] = {TRANSPARENT, TRANSPARENT, TRANSPARENT,
+			      TRANSPARENT, TRANSPARENT, GREEN,
+			      TRANSPARENT, TRANSPARENT, GREEN};
 	uint8_t found[9] = {TRANSPARENT};
-	(void) grid_scan(gr, (uint8_t *) &found);
+	(void)grid_scan(gr, (uint8_t *)&found);
 	grid_remove_jewels(gr, found);
-	mu_check(compare((uint8_t *) &expected, gr->cells, 9));
+	mu_check(compare((uint8_t *)&expected, gr->cells, 9));
 
 	free(gr);
 }
 
 MU_TEST(test_grid_detect_drops_1)
 {
-	uint8_t _cells[] = {
-		GREEN, ORANGE, ORANGE,
-		TRANSPARENT, ORANGE, GREEN,
-		TRANSPARENT, TRANSPARENT, GREEN
-	};
+	uint8_t _cells[] = {GREEN,	 ORANGE,      ORANGE,
+			    TRANSPARENT, ORANGE,      GREEN,
+			    TRANSPARENT, TRANSPARENT, GREEN};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
 	struct drop drs[2] = {0};
@@ -188,23 +164,19 @@ MU_TEST(test_grid_detect_drops_1)
 
 MU_TEST(test_grid_apply_drops_1)
 {
-	uint8_t _cells[] = {
-		GREEN, ORANGE, ORANGE,
-		TRANSPARENT, ORANGE, GREEN,
-		TRANSPARENT, TRANSPARENT, GREEN
-	};
+	uint8_t _cells[] = {GREEN,	 ORANGE,      ORANGE,
+			    TRANSPARENT, ORANGE,      GREEN,
+			    TRANSPARENT, TRANSPARENT, GREEN};
 	struct grid *gr = grid_alloc(3, 3);
 	memcpy(gr->cells, &_cells, gr->size);
 	struct drop drs[2] = {0};
-	uint8_t expected[] = {
-		TRANSPARENT, TRANSPARENT, ORANGE,
-		TRANSPARENT, ORANGE, GREEN,
-		GREEN, ORANGE, GREEN
-	};
+	uint8_t expected[] = {TRANSPARENT, TRANSPARENT, ORANGE,
+			      TRANSPARENT, ORANGE,	GREEN,
+			      GREEN,	   ORANGE,	GREEN};
 	unsigned int count = grid_detect_drops(gr, drs, 2);
 	mu_assert_int_eq(2, count);
 	grid_apply_drops(gr, drs, 2);
-	mu_check(compare((uint8_t *) &expected, gr->cells, 9));
+	mu_check(compare((uint8_t *)&expected, gr->cells, 9));
 
 	free(gr);
 }
@@ -214,20 +186,14 @@ MU_TEST(test_grid_position_piece_1)
 	struct grid *gr = grid_alloc(6, 3);
 	grid_init(gr);
 	struct piece pc = {
-		.row = 0,
-		.col = 0,
-		.colors = {GREEN, YELLOW, BLUE}
-	};
+		.row = 0, .col = 0, .colors = {GREEN, YELLOW, BLUE}};
 
 	mu_assert_int_eq(true, grid_position_piece(gr, &pc));
 	mu_assert_int_eq(1, pc.col);
 	mu_assert_int_eq(-2, pc.row);
 
 	struct piece pc2 = {
-		.row = 0,
-		.col = 1,
-		.colors = {PURPLE, RED, ORANGE}
-	};
+		.row = 0, .col = 1, .colors = {PURPLE, RED, ORANGE}};
 	piece_persist(&pc2, gr);
 
 	mu_assert_int_eq(false, grid_position_piece(gr, &pc));
@@ -237,11 +203,9 @@ MU_TEST(test_grid_position_piece_1)
 
 MU_TEST(test_piece_randomize_1)
 {
-	struct piece pc = {
-		.row = 0,
-		.col = 0,
-		.colors = {TRANSPARENT, TRANSPARENT, TRANSPARENT}
-	};
+	struct piece pc = {.row = 0,
+			   .col = 0,
+			   .colors = {TRANSPARENT, TRANSPARENT, TRANSPARENT}};
 
 	piece_randomize(&pc);
 
@@ -258,12 +222,10 @@ MU_TEST(test_piece_position_ok_1)
 	struct grid *gr = grid_alloc(6, 6);
 	grid_init(gr);
 
-	struct piece pc = {
-		.row = 0,
-		.col = 0,
-		.status = UNKNOWN,
-		.colors = {ORANGE, BLUE, YELLOW}
-	};
+	struct piece pc = {.row = 0,
+			   .col = 0,
+			   .status = UNKNOWN,
+			   .colors = {ORANGE, BLUE, YELLOW}};
 
 	mu_check(piece_persist(&pc, gr));
 	mu_assert_int_eq(PERSISTED, pc.status);
@@ -279,10 +241,7 @@ MU_TEST(test_piece_position_fail_1)
 	struct grid *gr = grid_alloc(6, 6);
 
 	struct piece pc = {
-		.row = -1,
-		.col = 0,
-		.colors = {ORANGE, BLUE, YELLOW}
-	};
+		.row = -1, .col = 0, .colors = {ORANGE, BLUE, YELLOW}};
 
 	mu_check(piece_persist(&pc, gr) == false);
 	pc.row = 0;
@@ -304,10 +263,7 @@ MU_TEST(test_piece_move_ok_1)
 	grid_init(gr);
 
 	struct piece pc = {
-		.row = 0,
-		.col = 0,
-		.colors = {ORANGE, BLUE, YELLOW}
-	};
+		.row = 0, .col = 0, .colors = {ORANGE, BLUE, YELLOW}};
 
 	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, DOWN, gr));
 	mu_assert_int_eq(MOVED, pc.status);
@@ -331,10 +287,7 @@ MU_TEST(test_piece_move_ok_2)
 	grid_init(gr);
 
 	struct piece pc = {
-		.row = 0,
-		.col = 0,
-		.colors = {ORANGE, BLUE, YELLOW}
-	};
+		.row = 0, .col = 0, .colors = {ORANGE, BLUE, YELLOW}};
 	grid_position_piece(gr, &pc);
 	mu_assert_int_eq(-2, pc.row);
 	mu_assert_int_eq(MOVED, piece_move_in_grid(&pc, DOWN, gr));
@@ -346,20 +299,16 @@ MU_TEST(test_piece_move_ok_2)
 MU_TEST(test_piece_move_fail_1)
 {
 	uint8_t _cells[] = {
-		TRANSPARENT, TRANSPARENT, TRANSPARENT,
-		TRANSPARENT, TRANSPARENT, TRANSPARENT,
-		TRANSPARENT, TRANSPARENT, TRANSPARENT,
-		TRANSPARENT, ORANGE, TRANSPARENT,
-		TRANSPARENT, RED, TRANSPARENT,
-		TRANSPARENT, BLUE, TRANSPARENT,
+		TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT,
+		TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT,
+		TRANSPARENT, TRANSPARENT, ORANGE,      TRANSPARENT,
+		TRANSPARENT, RED,	  TRANSPARENT, TRANSPARENT,
+		BLUE,	     TRANSPARENT,
 	};
 	struct grid *gr = grid_alloc(6, 3);
 	memcpy(gr->cells, &_cells, gr->size);
 	struct piece pc = {
-		.row = 3,
-		.col = 0,
-		.colors = {PURPLE, YELLOW, GREEN}
-	};
+		.row = 3, .col = 0, .colors = {PURPLE, YELLOW, GREEN}};
 
 	mu_check(piece_move_in_grid(&pc, LEFT, gr) == BLOCKED);
 	mu_check(piece_move_in_grid(&pc, RIGHT, gr) == BLOCKED);
@@ -386,10 +335,7 @@ MU_TEST(test_piece_move_fail_1)
 MU_TEST(test_piece_rotate_1)
 {
 	struct piece pc = {
-		.row = 0,
-		.col = 0,
-		.colors = {PURPLE, YELLOW, GREEN}
-	};
+		.row = 0, .col = 0, .colors = {PURPLE, YELLOW, GREEN}};
 
 	piece_rotate(&pc, DOWN);
 	mu_assert_int_eq(GREEN, pc.colors[0]);
