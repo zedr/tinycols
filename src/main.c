@@ -7,7 +7,7 @@
 #include "tinycols.h"
 
 #define TICK_TIME 10000
-#define MAX_TIMER 179
+#define MAX_TIMER 180
 
 WINDOW *win;
 uint8_t tmp_res[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
@@ -51,6 +51,7 @@ void game_tick(struct game *gm)
 
 	if (gm->current_piece.status == PERSISTED) {
 		gm->jewels_removed += grid_remove_jewels(gm->grid, tmp_res);
+		gm->level = get_level_by_jewels(gm->jewels_removed);
 		unsigned int count = 0;
 		while ((count = grid_detect_drops(gm->grid, tmp_drs,
 						  gm->grid->size))) {
@@ -87,6 +88,17 @@ void game_tick(struct game *gm)
 }
 
 /**
+ * Get the tick time based on the level number
+ *
+ * @param level: The level number
+ * @return The tick time number
+ */
+static uint8_t get_tick_time(unsigned short level)
+{
+	return (uint8_t) MAX_TIMER / (level + 1);
+}
+
+/**
  * run() - Run the game.
  */
 static void run(void)
@@ -103,7 +115,8 @@ static void run(void)
 	draw_frame(gm, 0, 0);
 
 	struct timeval time_start, time_end;
-	uint8_t timer = 0;
+	uint8_t timer = 1;
+	uint8_t tick_time = get_tick_time(gm->level);
 	while (gm->status != GAME_OVER) {
 		// Time Start
 		gettimeofday(&time_start, NULL);
@@ -114,8 +127,12 @@ static void run(void)
 		}
 
 		// Process game logic
-		if (timer == MAX_TIMER) {
+		if (timer > tick_time) {
 			game_tick(gm);
+			tick_time = get_tick_time(gm->level);
+			timer = 1;
+		} else {
+			timer++;
 		}
 
 		// Render game
@@ -132,10 +149,6 @@ static void run(void)
 		// Time End
 		gettimeofday(&time_end, NULL);
 		usleep(time_start.tv_usec + TICK_TIME - time_end.tv_usec);
-		timer++;
-		if (timer > MAX_TIMER) {
-			timer = 0;
-		}
 	}
 
 	usleep(1000000);

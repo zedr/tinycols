@@ -13,6 +13,17 @@ enum color random_color(void)
 }
 
 /**
+ * get_level_by_jewels() - Get the level based on the given number of jewels.
+ *
+ * @param num: The current number of jewels removed
+ * @return The level number
+ */
+unsigned short get_level_by_jewels(uint_least16_t num)
+{
+	return num / GAME_DEFAULT_JEWELS_FOR_LEVEL;
+}
+
+/**
  * grid_alloc() - Allocate memory for a grid, populating the metadata fields.
  *
  * @param rows: The number of rows for the grid.

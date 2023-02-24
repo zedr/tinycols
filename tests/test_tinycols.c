@@ -373,6 +373,23 @@ MU_TEST(test_game_init_1)
 	game_free(gm);
 }
 
+MU_TEST(test_game_set_level_1)
+{
+	mu_assert_int_eq(0, get_level_by_jewels(0));
+	mu_assert_int_eq(0, get_level_by_jewels(5));
+	mu_assert_int_eq(1, get_level_by_jewels(30));
+	mu_assert_int_eq(1, get_level_by_jewels(31));
+	mu_assert_int_eq(2, get_level_by_jewels(60));
+
+	struct game *gm = game_alloc();
+	game_init(gm, GAME_DEFAULT_LEVEL, GAME_DEFAULT_COLOR_MAX);
+
+	gm->level = get_level_by_jewels(31);
+	mu_assert_int_eq(1, gm->level);
+
+	game_free(gm);
+}
+
 MU_TEST_SUITE(test_suite_grid)
 {
 	MU_RUN_TEST(test_grid_create_and_init_1);
@@ -401,6 +418,7 @@ MU_TEST_SUITE(test_suite_piece)
 MU_TEST_SUITE(test_suite_game)
 {
 	MU_RUN_TEST(test_game_init_1);
+	MU_RUN_TEST(test_game_set_level_1);
 }
 
 int main(int argc, char *argv[])

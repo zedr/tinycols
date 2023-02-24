@@ -8,6 +8,7 @@
 #define GAME_DEFAULT_COLOR_MAX YELLOW
 #define GRID_DEFAULT_COLS 6
 #define GRID_DEFAULT_ROWS 13
+#define GAME_DEFAULT_JEWELS_FOR_LEVEL 30
 #define PIECE_SIZE 3
 #define SCORE_PER_PIECE 30
 #define NOT_FOUND -1
@@ -108,6 +109,8 @@ struct game {
 };
 
 enum color random_color(void);
+
+unsigned short get_level_by_jewels(uint_least16_t num);
 
 struct grid *grid_alloc(uint8_t rows, uint8_t cols);
 
