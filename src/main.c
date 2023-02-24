@@ -157,7 +157,7 @@ static void run(void)
 	teardown_gfx(win);
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
 	struct timeval time_now;
 	gettimeofday(&time_now, NULL);
