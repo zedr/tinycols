@@ -127,7 +127,7 @@ static void run(void)
 		}
 
 		// Process game logic
-		if (timer > tick_time) {
+		if (gm->current_piece.status == LANDED || timer > tick_time) {
 			game_tick(gm);
 			tick_time = get_tick_time(gm->level);
 			timer = 1;
