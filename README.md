@@ -5,10 +5,12 @@ A tiny Columns clone for the Linux terminal.
 
 ## Features
 - [x] Single player mode
-- [x] Levels
+- [x] Levels (infinite mode)
 - [x] Scoring
 - [x] Color
+- [ ] Configuration menu
 - [ ] Hi-score table
+- [ ] Flash columns mode
 - [ ] 2 player vs. mode
 - [ ] Computer vs. mode
 - [ ] Internet vs. mode
