@@ -7,6 +7,7 @@ A tiny Columns clone for the Linux terminal.
 - [x] Single player mode
 - [x] Levels
 - [x] Scoring
+- [x] Color
 - [ ] Hi-score table
 - [ ] 2 player vs. mode
 - [ ] Computer vs. mode

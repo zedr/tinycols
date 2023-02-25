@@ -13,6 +13,17 @@ WINDOW *setup_gfx(void)
 	keypad(win, true);
 	nodelay(win, true);
 	curs_set(0);
+
+	// Colors
+	start_color();
+	init_pair(0, COLOR_BLACK, COLOR_BLACK);
+	init_pair(1, COLOR_MAGENTA, COLOR_MAGENTA);
+	init_pair(2, COLOR_WHITE, COLOR_WHITE);
+	init_pair(3, COLOR_BLUE, COLOR_BLUE);
+	init_pair(4, COLOR_RED, COLOR_RED);
+	init_pair(5, COLOR_GREEN, COLOR_GREEN);
+	init_pair(6, COLOR_YELLOW, COLOR_YELLOW);
+
 	return win;
 }
 
@@ -39,7 +50,9 @@ void draw_grid_jewels(const struct grid *gr, int x, int y)
 	for (int i = 0; i < gr->size; i++) {
 		div_t d = div(i, gr->cols);
 		int jwl = gr->cells[i];
+		attron(COLOR_PAIR(jwl));
 		mvaddch(y + d.quot, x + d.rem, (jwl) ? jwl + '0' : ' ');
+		attroff(COLOR_PAIR(jwl));
 	}
 }
 
@@ -53,8 +66,10 @@ void draw_piece(struct piece *pc, int offset_x, int offset_y)
 	for (int i = 0; i < PIECE_SIZE; i++) {
 		int y0 = pc->row + i;
 		if (y0 >= -1) {
-			mvaddch(offset_y + y0, offset_x + pc->col,
-				pc->colors[i] + '0');
+			enum color jwl = pc->colors[i];
+			attron(COLOR_PAIR(jwl));
+			mvaddch(offset_y + y0, offset_x + pc->col, jwl + '0');
+			attroff(COLOR_PAIR(jwl));
 		}
 	}
 }
