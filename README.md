@@ -1,5 +1,5 @@
 # TinyCols
-A tiny Columns clone for the Linux terminal.
+A jewels matching game for the Linux terminal.
 
 ![Screenshot](media/screen.png)
 
