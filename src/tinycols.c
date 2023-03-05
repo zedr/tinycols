@@ -2,14 +2,9 @@
 
 #include "tinycols.h"
 
-/**
- * random_color() - Return a random jewel color.
- *
- * @return The picked color.
- */
-enum color random_color(void)
+enum color random_color(unsigned int color_max)
 {
-	return rand() % COLOR_MAX + 1;
+	return rand() % color_max + 1;
 }
 
 /**
@@ -315,15 +310,10 @@ void grid_apply_drops(struct grid *gr, const struct drop *drs,
 	}
 }
 
-/**
- * piece_randomize() - Randomize the colors of the jewels in a given piece.
- *
- * @param pc: The piece to modify.
- */
-void piece_randomize(struct piece *pc)
+void piece_randomize(struct piece *pc, unsigned int max_color)
 {
 	for (int i = 0; i < PIECE_SIZE; i++) {
-		pc->colors[i] = random_color();
+		pc->colors[i] = random_color(max_color);
 	}
 }
 
@@ -481,6 +471,24 @@ struct game *game_alloc(void)
 	return gm;
 }
 
+bool game_adjust(struct game *gm)
+{
+	uint_least16_t jewels = gm->jewels_removed;
+	unsigned short prev_level = gm->level;
+
+	if (jewels < GAME_DEFAULT_JEWELS_FOR_LEVEL) {
+		gm->level = 0;
+		gm->color_max = GAME_DEFAULT_COLOR_MIN;
+	} else if (jewels < GAME_DEFAULT_JEWELS_FOR_LEVEL * 2) {
+		gm->level = 1;
+		gm->color_max = GAME_DEFAULT_COLOR_MIN;
+	} else if (jewels < GAME_DEFAULT_JEWELS_FOR_LEVEL * 3) {
+		gm->level = 2;
+		gm->color_max = GAME_DEFAULT_COLOR_MIN;
+	}
+	return prev_level != gm->level;
+}
+
 /**
  * game_cycle_piece() - Cycle the current and next pieces in a given game.
  *
@@ -491,24 +499,17 @@ void game_cycle_piece(struct game *gm)
 	for (int i = 0; i < PIECE_SIZE; i++) {
 		gm->current_piece.colors[i] = gm->next_piece.colors[i];
 	}
-	piece_randomize(&gm->next_piece);
+	piece_randomize(&gm->next_piece, gm->color_max);
 }
 
-/**
- * game_init() - Initialize a game.
- *
- * @param gm: The game to initialize.
- * @param level: The level at which the game must be started.
- * @param color_max: The maximum color to use for the jewels.
- */
-void game_init(struct game *gm, unsigned int level, enum color color_max)
+void game_init(struct game *gm, unsigned int level, enum game_class class)
 {
 	gm->score = 0;
 	gm->level = level;
 	gm->status = GAME_READY;
-	gm->color_max = color_max;
+	gm->color_max = (enum color) class;
 
-	piece_randomize(&gm->next_piece);
+	piece_randomize(&gm->next_piece, gm->color_max);
 	game_cycle_piece(gm);
 	grid_init(gm->grid);
 	grid_position_piece(gm->grid, &gm->current_piece);

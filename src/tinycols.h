@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define GAME_DEFAULT_LEVEL 0
+#define GAME_DEFAULT_COLOR_MIN RED
 #define GAME_DEFAULT_COLOR_MAX YELLOW
 #define GRID_DEFAULT_COLS 6
 #define GRID_DEFAULT_ROWS 13
@@ -36,6 +37,16 @@ enum result { UNKNOWN, MOVED, BLOCKED, LANDED, PERSISTED };
  * game_status - The possible states a game can take.
  */
 enum game_state { GAME_READY, GAME_OVER };
+
+/**
+ * game_class - The game skill class, mapped to the appropriate colors
+ */
+
+enum game_class {
+	CLASS_NOVICE = RED,
+	CLASS_AMATEUR = GREEN,
+	CLASS_PRO = YELLOW
+};
 
 /**
  * grid - The grid of a game.
@@ -108,7 +119,13 @@ struct game {
 	struct grid *grid;
 };
 
-enum color random_color(void);
+/**
+ * random_color() - Pick a random jewel color.
+ *
+ * @param color_max: The maximum color that can be picked.
+ * @return The picked color.
+ */
+enum color random_color(unsigned int color_max);
 
 unsigned short get_level_by_jewels(uint_least16_t num);
 
@@ -128,7 +145,13 @@ void grid_apply_drops(struct grid *gr, const struct drop *drs,
 
 bool grid_position_piece(struct grid *gr, struct piece *pc);
 
-void piece_randomize(struct piece *pc);
+/**
+ * piece_randomize() - Randomize the colors of the jewels in a given piece.
+ *
+ * @param pc: The piece to modify.
+ * @param color_max: The maximum color that can be used in the piece.
+ */
+void piece_randomize(struct piece *pc, unsigned int color_max);
 
 bool piece_persist(struct piece *pc, struct grid *gr);
 
@@ -145,7 +168,22 @@ void test_set_cell(struct grid *gr, int row, int col, enum color clr);
 //  Game functions
 struct game *game_alloc(void);
 
-void game_init(struct game *gm, unsigned int level, enum color color_max);
+/**
+ * game_init() - Initialize a game.
+ *
+ * @param gm: The game to initialize.
+ * @param level: The level at which the game must be started.
+ * @param class: The skill class of the game
+ */
+void game_init(struct game *gm, unsigned int level, enum game_class class);
+
+/**
+ * game_adjust() - Adjust the game according to the number of removed jewels.
+ *
+ * @param gm: The game to inspect and adjust
+ * @return Were the game settings changed?
+ */
+bool game_adjust(struct game *gm);
 
 void game_cycle_piece(struct game *gm);
 

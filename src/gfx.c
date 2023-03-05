@@ -102,21 +102,35 @@ void draw_stars(const uint8_t *result, struct grid *gr, int x, int y)
 
 void draw_debug(struct game *g, int x, int y)
 {
-	mvprintw(y, x, "grid size:\t%d x %d ", g->grid->cols, g->grid->rows);
-	mvprintw(y + 1, x, "piece coords:\t%d, %d ", g->current_piece.col,
-		 g->current_piece.row);
 	struct piece pc = g->current_piece;
+
+	mvprintw(y, x, "grid size:\t%d x %d ", g->grid->cols, g->grid->rows);
+	mvprintw(y + 1, x, "piece coords:\t%d, %d ", pc.col, pc.row);
 	int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;
 	if (idx > 0 && idx < g->grid->cols * g->grid->rows) {
 		mvprintw(y + 2, x, "under piece:\t%d ", g->grid->cells[idx]);
 	}
-	mvprintw(y + 3, x, "level:\t%hu ", (unsigned short)g->level);
-	mvprintw(y + 4, x, "score:\t%lu ", (unsigned long)g->score);
+	switch ((enum game_class)g->color_max) {
+	case CLASS_NOVICE:
+		mvprintw(y + 3, x, "class:\tnovice");
+		break;
+	case CLASS_AMATEUR:
+		mvprintw(y + 3, x, "class:\tamateur");
+		break;
+	case CLASS_PRO:
+		mvprintw(y + 3, x, "class:\tpro");
+		break;
+	default:
+		mvprintw(y + 3, x, "class:\t???");
+		break;
+	}
+	mvprintw(y + 4, x, "level:\t%hu ", (unsigned short)g->level);
+	mvprintw(y + 5, x, "score:\t%lu ", (unsigned long)g->score);
 	if (g->last_score > 0) {
-		mvprintw(y + 5, x, "      \t+%lu ",
+		mvprintw(y + 6, x, "      \t+%lu ",
 			 (unsigned long)g->last_score);
 	} else {
-		mvprintw(y + 5, x, "      \t     ");
+		mvprintw(y + 6, x, "      \t     ");
 	}
-	mvprintw(y + 6, x, "jewels:\t%lu ", (unsigned long) g->jewels_removed);
+	mvprintw(y + 7, x, "jewels:\t%lu ", (unsigned long)g->jewels_removed);
 }

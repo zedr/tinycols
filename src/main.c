@@ -95,13 +95,13 @@ void game_tick(struct game *gm)
  */
 static uint8_t get_tick_time(unsigned short level)
 {
-	return (uint8_t) MAX_TIMER / (level + 1);
+	return (uint8_t)MAX_TIMER / (level + 1);
 }
 
 /**
  * run() - Run the game.
  */
-static void run(void)
+static void run(enum game_class cls)
 {
 	win = setup_gfx();
 
@@ -110,7 +110,7 @@ static void run(void)
 		perror("Out of memory");
 		exit(EXIT_FAILURE);
 	}
-	game_init(gm, GAME_DEFAULT_LEVEL, GAME_DEFAULT_COLOR_MAX);
+	game_init(gm, GAME_DEFAULT_LEVEL, cls);
 
 	draw_frame(gm, 0, 0);
 
@@ -143,7 +143,7 @@ static void run(void)
 		} else {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
-		draw_debug(gm, 10, 7);
+		draw_debug(gm, 9, 6);
 		refresh();
 
 		// Time End
@@ -157,11 +157,60 @@ static void run(void)
 	teardown_gfx(win);
 }
 
-int main(void)
+/**
+ * init_rand() - Initialize the random number generator
+ */
+static void init_rand(void)
 {
 	struct timeval time_now;
 	gettimeofday(&time_now, NULL);
 	srand((unsigned int)time_now.tv_usec); // NOLINT(cert-msc51-cpp)
-	run();
+}
+
+static void usage(char *prog_name)
+{
+	fprintf(stderr, "Usage:\n  %s [-c class]\n", prog_name);
+	fputs("\n", stderr);
+	fputs("Options:\n", stderr);
+	fputs("  -h\t\tPrint this help message.\n", stderr);
+	fputs("  -c[N]\t\tSelect game class number N: "
+	      "1 (Novice), "
+	      "2 (Amateur), "
+	      "3 (Pro). "
+	      "The default is 2.\n",
+	      stderr);
+}
+
+int main(int argc, char **argv)
+{
+	init_rand();
+	int opt;
+	enum game_class cls = CLASS_AMATEUR;
+
+	char *prog_name = argv[0];
+	while ((opt = getopt(argc, argv, "c:h")) != -1) {
+		switch (opt) {
+		case 'h': {
+			usage(prog_name);
+			exit(EXIT_SUCCESS);
+		}
+		case 'c': {
+			const int num = atoi(optarg);
+			if (num >= 1 && num <= 3) {
+				cls = (enum game_class)(num + 3);
+			} else {
+				fprintf(stderr, "Error: level must be between "
+						"1 and 3.\n");
+				exit(EXIT_FAILURE);
+			}
+			break;
+		}
+		default:
+			usage(prog_name);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	run(cls);
 	return 0;
 }
