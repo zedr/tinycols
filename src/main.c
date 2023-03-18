@@ -33,6 +33,9 @@ void process_keys(struct game *gm)
 	case KEY_UP:
 		piece_rotate(&gm->current_piece, UP);
 		break;
+	case 'q':
+		gm->status = GAME_OVER;
+		break;
 	default:
 		break;
 	}
@@ -101,7 +104,7 @@ static uint8_t get_tick_time(unsigned short level)
 /**
  * run() - Run the game.
  */
-static void run(enum game_class cls)
+static score_t run(enum game_class cls)
 {
 	win = setup_gfx();
 
@@ -153,8 +156,10 @@ static void run(enum game_class cls)
 
 	usleep(1000000);
 
+	score_t final_score = gm->score;
 	game_free(gm);
 	teardown_gfx(win);
+	return final_score;
 }
 
 /**
@@ -211,6 +216,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	run(cls);
+	printf("Final score: %hu\n", run(cls));
 	return 0;
 }
