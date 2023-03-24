@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 			if (num >= 1 && num <= 3) {
 				cls = (enum game_class)(num + 3);
 			} else {
-				fprintf(stderr, "Error: level must be between "
+				fprintf(stderr, "Error: class must be between "
 						"1 and 3.\n");
 				exit(EXIT_FAILURE);
 			}
