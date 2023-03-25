@@ -4,3 +4,4 @@ old
 _*.c
 _*.h
 .clang-format
+.idea
