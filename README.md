@@ -8,6 +8,7 @@ A jewels matching game for the Linux terminal.
 - [x] Levels (infinite mode)
 - [x] Scoring
 - [x] Color
+- [x] NO_COLOR
 - [ ] Configuration menu
 - [ ] Hi-score table
 - [ ] Flash columns mode
@@ -31,8 +32,11 @@ A jewels matching game for the Linux terminal.
  - A C compiler
 
 ### Instructions
-Run `make`, then `./build/tinycols`
+Run `make`.
+
+## Run
+Run `./build/tinycols -h` for usage information.
 
 ## Test
-Run `make test`, then `./build/test`
+Run `make test && ./build/test`.
 
