@@ -12,8 +12,6 @@ void teardown_gfx();
 
 void draw_debug(struct game *g, int x, int y);
 
-void draw_grid(struct grid *gr, int offset_x, int offset_y);
-
 void draw_frame(struct game *g, int offset_x, int offset_y);
 
 void draw_game(struct game *g, int offset_x, int offset_y);

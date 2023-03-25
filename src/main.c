@@ -115,8 +115,6 @@ static score_t run(enum game_class cls)
 	}
 	game_init(gm, GAME_DEFAULT_LEVEL, cls);
 
-	draw_frame(gm, 0, 0);
-
 	struct timeval time_start, time_end;
 	uint8_t timer = 1;
 	uint8_t tick_time = get_tick_time(gm->level);
@@ -141,12 +139,13 @@ static score_t run(enum game_class cls)
 		// Render game
 		draw_frame(gm, 0, 0);
 		draw_game(gm, 0, 0);
+
 		if (gm->current_piece.status == PERSISTED) {
 			draw_stars(tmp_res, gm->grid, 0, 0);
 		} else {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
-		draw_debug(gm, 9, 6);
+		draw_debug(gm, gm->grid->cols * 2 + 2, 6);
 		refresh();
 
 		// Time End
