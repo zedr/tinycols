@@ -28,7 +28,11 @@ void process_keys(struct game *gm)
 		piece_move_in_grid(&gm->current_piece, LEFT, gm->grid);
 		break;
 	case KEY_DOWN:
-		piece_move_in_grid(&gm->current_piece, DOWN, gm->grid);
+		if (gm->current_piece.row >= -1) {
+			piece_move_in_grid(&gm->current_piece,
+					   DOWN,
+					   gm->grid);
+		}
 		break;
 	case KEY_UP:
 		piece_rotate(&gm->current_piece, UP);
