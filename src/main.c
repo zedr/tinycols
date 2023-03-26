@@ -83,6 +83,7 @@ void game_tick(struct game *gm)
 	// Scan the playing field for matches
 	if (gm->current_piece.status == PERSISTED) {
 		if ((tmp_score = grid_scan(gm->grid, tmp_res)) > 0) {
+			tmp_score *= (gm->level + 1) ;
 			gm->score += tmp_score;
 		} else {
 			game_cycle_piece(gm);
