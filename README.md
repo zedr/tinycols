@@ -8,7 +8,7 @@ A jewels matching game for the Linux terminal.
 - [x] Levels (infinite mode)
 - [x] Scoring
 - [x] Color
-- [x] NO_COLOR
+- [ ] NO_COLOR
 - [ ] Configuration menu
 - [ ] Hi-score table
 - [ ] Flash columns mode
