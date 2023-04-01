@@ -106,6 +106,13 @@ static uint8_t get_tick_time(unsigned short level)
 	return (uint8_t)MAX_TIMER / (level + 1);
 }
 
+static int32_t get_delay_usec(struct timeval start, struct timeval end)
+{
+	time_t sec = end.tv_sec - start.tv_sec;
+	int32_t t = start.tv_usec + TICK_TIME - (sec * 1000000) - end.tv_usec;
+	return t;
+}
+
 /**
  * run() - Run the game.
  */
@@ -155,7 +162,8 @@ static score_t run(enum game_class cls)
 
 		// Time End
 		gettimeofday(&time_end, NULL);
-		usleep(time_start.tv_usec + TICK_TIME - time_end.tv_usec);
+		int32_t t = get_delay_usec(time_start, time_end);
+		usleep(t);
 	}
 
 	usleep(1000000);
