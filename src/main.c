@@ -34,8 +34,12 @@ void process_keys(struct game *gm)
 					   gm->grid);
 		}
 		break;
+	case 'a':
 	case KEY_UP:
 		piece_rotate(&gm->current_piece, UP);
+		break;
+	case 'z':
+		piece_rotate(&gm->current_piece, DOWN);
 		break;
 	case 'q':
 		gm->status = GAME_OVER;

@@ -23,7 +23,8 @@ A jewels matching game for the Linux terminal.
 | →   | move piece right             |
 | ←   | move piece left              |
 | ↓   | move piece down (accelerate) |
-| ↑   | rotate jewels upwards        |
+| ↑ a | rotate jewels upwards        |
+| z   | rotate jewels downwards      |
 
 ## Build
 
