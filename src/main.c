@@ -100,7 +100,7 @@ void game_tick(struct game *gm)
 }
 
 /**
- * Get the tick time based on the level number
+ * get_tick_time() - Get the tick time based on the level number.
  *
  * @param level: The level number
  * @return The tick time number
@@ -110,11 +110,20 @@ static uint8_t get_tick_time(unsigned short level)
 	return (uint8_t)MAX_TIMER / (level + 1);
 }
 
-static int32_t get_delay_usec(struct timeval start, struct timeval end)
+/**
+ * get_delay_usec() - Get the delay for a tick in microseconds.
+ *
+ * If the result of the computation is negative, return zero.
+ *
+ * @param start
+ * @param end
+ * @return
+ */
+static uint32_t get_delay_usec(struct timeval start, struct timeval end)
 {
 	time_t sec = end.tv_sec - start.tv_sec;
 	int32_t t = start.tv_usec + TICK_TIME - (sec * 1000000) - end.tv_usec;
-	return t;
+	return (t >= 0) ? (uint32_t ) t : 0;
 }
 
 /**
@@ -166,8 +175,7 @@ static score_t run(enum game_class cls)
 
 		// Time End
 		gettimeofday(&time_end, NULL);
-		int32_t t = get_delay_usec(time_start, time_end);
-		usleep(t);
+		usleep(get_delay_usec(time_start, time_end));
 	}
 
 	usleep(1000000);
