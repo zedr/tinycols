@@ -29,9 +29,10 @@ void process_keys(struct game *gm)
 		break;
 	case KEY_DOWN:
 		if (gm->current_piece.row >= -1) {
-			piece_move_in_grid(&gm->current_piece,
-					   DOWN,
-					   gm->grid);
+			if (piece_move_in_grid(&gm->current_piece, DOWN,
+					       gm->grid) == MOVED) {
+				gm->score++;
+			}
 		}
 		break;
 	case 'a':
@@ -87,7 +88,7 @@ void game_tick(struct game *gm)
 	// Scan the playing field for matches
 	if (gm->current_piece.status == PERSISTED) {
 		if ((tmp_score = grid_scan(gm->grid, tmp_res)) > 0) {
-			tmp_score *= (gm->level + 1) ;
+			tmp_score *= (gm->level + 1);
 			gm->score += tmp_score;
 		} else {
 			game_cycle_piece(gm);
@@ -123,7 +124,7 @@ static uint32_t get_delay_usec(struct timeval start, struct timeval end)
 {
 	time_t sec = end.tv_sec - start.tv_sec;
 	int32_t t = start.tv_usec + TICK_TIME - (sec * 1000000) - end.tv_usec;
-	return (t >= 0) ? (uint32_t ) t : 0;
+	return (t >= 0) ? (uint32_t)t : 0;
 }
 
 /**
