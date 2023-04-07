@@ -505,6 +505,7 @@ void game_cycle_piece(struct game *gm)
 void game_init(struct game *gm, unsigned int level, enum game_class class)
 {
 	gm->score = 0;
+	gm->tick = 0;
 	gm->level = level;
 	gm->status = GAME_READY;
 	gm->color_max = (enum color) class;

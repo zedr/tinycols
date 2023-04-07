@@ -92,33 +92,37 @@ void draw_stars(const uint8_t *result, struct grid *gr, int x, int y) {
 void draw_debug(struct game *g, int x, int y) {
     struct piece pc = g->current_piece;
 
-    mvprintw(y, x, "grid size:\t%d x %d ", g->grid->cols, g->grid->rows);
-    mvprintw(y + 1, x, "piece coords:\t%d, %d ", pc.col, pc.row);
+    mvprintw(y++, x, "grid size:\t%d x %d  ", g->grid->cols, g->grid->rows);
+    mvprintw(y++, x, "piece coords:\t%d, %d  ", pc.col, pc.row);
     int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;
-    if (idx > 0 && idx < g->grid->cols * g->grid->rows) {
-        mvprintw(y + 2, x, "under piece:\t%d ", g->grid->cells[idx]);
+    if (idx >= 0 && idx < g->grid->cols * g->grid->rows) {
+        mvprintw(y++, x, "under piece:\t%d  ", g->grid->cells[idx]);
+    } else {
+	    mvprintw(y++, x, "under piece:\tn/a");
     }
+	mvprintw(y++, x, "piece status:\t%d  ", g->current_piece.status);
+	mvprintw(y++, x, "tick:\t%d  ", g->tick);
     switch ((enum game_class) g->color_max) {
         case CLASS_NOVICE:
-            mvprintw(y + 3, x, "class:\tnovice");
+            mvprintw(y++, x, "class:\tnovice");
             break;
         case CLASS_AMATEUR:
-            mvprintw(y + 3, x, "class:\tamateur");
+            mvprintw(y++, x, "class:\tamateur");
             break;
         case CLASS_PRO:
-            mvprintw(y + 3, x, "class:\tpro");
+            mvprintw(y++, x, "class:\tpro");
             break;
         default:
-            mvprintw(y + 3, x, "class:\t???");
+            mvprintw(y++, x, "class:\t???");
             break;
     }
-    mvprintw(y + 4, x, "level:\t%hu ", (unsigned short) g->level);
-    mvprintw(y + 5, x, "score:\t%lu ", (unsigned long) g->score);
+    mvprintw(y++, x, "level:\t%hu ", (unsigned short) g->level);
+    mvprintw(y++, x, "score:\t%lu ", (unsigned long) g->score);
     if (g->last_score > 0) {
-        mvprintw(y + 6, x, "      \t+%lu ",
+        mvprintw(y++, x, "      \t+%lu ",
                  (unsigned long) g->last_score);
     } else {
-        mvprintw(y + 6, x, "      \t     ");
+        mvprintw(y++, x, "      \t     ");
     }
-    mvprintw(y + 7, x, "jewels:\t%lu ", (unsigned long) g->jewels_removed);
+    mvprintw(y++, x, "jewels:\t%lu ", (unsigned long) g->jewels_removed);
 }

@@ -350,9 +350,10 @@ MU_TEST(test_piece_rotate_1)
 MU_TEST(test_game_init_1)
 {
 	struct game *gm = game_alloc();
-	game_init(gm, GAME_DEFAULT_LEVEL, GAME_DEFAULT_COLOR_MAX);
+	game_init(gm, GAME_DEFAULT_LEVEL, CLASS_PRO);
 
 	mu_assert_int_eq(GAME_DEFAULT_LEVEL, gm->level);
+	mu_assert_int_eq(0, gm->tick);
 	mu_assert_int_eq(0, gm->score);
 	mu_assert_int_eq(GAME_DEFAULT_COLOR_MAX, gm->color_max);
 	mu_assert_int_eq(GAME_READY, gm->status);
@@ -409,6 +410,15 @@ MU_TEST(test_game_adjust_1)
 	game_free(gm);
 }
 
+MU_TEST(test_game_ticker_1)
+{
+	struct game gm;
+	gm.tick = 0;
+	gm.tick += 300;
+
+	mu_assert_int_eq(44, gm.tick);
+}
+
 MU_TEST_SUITE(test_suite_grid)
 {
 	MU_RUN_TEST(test_grid_create_and_init_1);
@@ -441,11 +451,17 @@ MU_TEST_SUITE(test_suite_game)
 	MU_RUN_TEST(test_game_adjust_1);
 }
 
+MU_TEST_SUITE(test_suite_game_ticker)
+{
+	MU_RUN_TEST(test_game_ticker_1);
+}
+
 int main(int argc, char *argv[])
 {
 	MU_RUN_SUITE(test_suite_grid);
 	MU_RUN_SUITE(test_suite_piece);
 	MU_RUN_SUITE(test_suite_game);
+	MU_RUN_SUITE(test_suite_game_ticker);
 	MU_REPORT();
 	return MU_EXIT_CODE;
 }

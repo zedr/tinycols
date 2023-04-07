@@ -31,12 +31,20 @@ enum direction { UP, DOWN, LEFT, RIGHT };
 /**
  * result - The result of an action affecting a piece.
  */
-enum result { UNKNOWN, MOVED, BLOCKED, LANDED, PERSISTED };
+enum result {
+	UNKNOWN,
+	DEACTIVATED,
+	PENDING,
+	MOVED,
+	BLOCKED,
+	LANDED,
+	PERSISTED,
+};
 
 /**
  * game_status - The possible states a game can take.
  */
-enum game_state { GAME_READY, GAME_OVER };
+enum game_state { GAME_READY, GAME_PAUSED, GAME_OVER };
 
 /**
  * game_class - The game skill class, mapped to the appropriate colors
@@ -109,6 +117,7 @@ struct drop {
  */
 struct game {
 	unsigned short level;
+	uint8_t tick;
 	score_t score;
 	score_t last_score;
 	uint_least16_t jewels_removed;
