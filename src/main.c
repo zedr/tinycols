@@ -14,6 +14,7 @@ WINDOW *win;
 uint8_t tmp_res[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 struct drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 struct game_event_queue qu;
+int tick_time;
 
 static void scan_grid(struct game *gm, unsigned int t);
 
@@ -66,18 +67,31 @@ static uint8_t get_tick_time(unsigned short level)
 	return (uint8_t)MAX_TIMER / (level + 1);
 }
 
+/**
+ * move_piece_down() - Move the piece down (game gravity)
+ *
+ * @param gm: The game to update
+ * @param t: The current tick
+ */
 static void move_piece_down(struct game *gm, unsigned int t)
 {
 	if (gm->current_piece.status < LANDED) {
 		piece_move_in_grid(&gm->current_piece, DOWN, gm->grid);
 	}
-	game_queue_push(&qu, t + get_tick_time(gm->level), move_piece_down);
+	game_queue_push(&qu, t + tick_time, move_piece_down);
 }
 
+/**
+ *
+ *
+ * @param gm
+ * @param t
+ */
 static void remove_jewels(struct game *gm, unsigned int t)
 {
 	gm->jewels_removed += grid_remove_jewels(gm->grid, tmp_res);
 	gm->level = get_level_by_jewels(gm->jewels_removed);
+	tick_time = get_tick_time(gm->level);
 	unsigned int count;
 	while ((count = grid_detect_drops(gm->grid, tmp_drs,
 					  gm->grid->size))) {
@@ -164,6 +178,7 @@ static score_t run(enum game_class cls)
 	game_queue_init(&qu, gm);
 
 	struct timeval time_start, time_end;
+	tick_time = get_tick_time(gm->level);
 
 	while (gm->status != GAME_OVER) {
 		// Time Start
