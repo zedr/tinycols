@@ -92,6 +92,11 @@ void draw_stars(const uint8_t *result, struct grid *gr, int x, int y) {
 void draw_debug(struct game *g, int x, int y) {
     struct piece pc = g->current_piece;
 
+    if (g->status == GAME_PAUSED) {
+	    mvprintw(y++, x, "== PAUSED ==");
+    } else {
+	    mvprintw(y++, x, "            ");
+    }
     mvprintw(y++, x, "grid size:\t%d x %d  ", g->grid->cols, g->grid->rows);
     mvprintw(y++, x, "piece coords:\t%d, %d  ", pc.col, pc.row);
     int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;

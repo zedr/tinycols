@@ -25,7 +25,17 @@ static void scan_grid(struct game *gm, unsigned int t);
  */
 void process_keys(struct game *gm)
 {
-	switch (wgetch(win)) {
+	int ch = wgetch(win);
+	if (ch == 'p') {
+		gm->status = (gm->status == GAME_PAUSED) ? GAME_READY
+							 : GAME_PAUSED;
+	}
+
+	if (gm->status == GAME_PAUSED) {
+		return;
+	}
+
+	switch (ch) {
 	case KEY_RIGHT:
 		piece_move_in_grid(&gm->current_piece, RIGHT, gm->grid);
 		break;
@@ -35,7 +45,7 @@ void process_keys(struct game *gm)
 	case KEY_DOWN:
 		if ((gm->current_piece.status != DEACTIVATED) &&
 		    (piece_move_in_grid(&gm->current_piece, DOWN, gm->grid) ==
-			    MOVED)) {
+		     MOVED)) {
 			gm->score++;
 		}
 		break;
@@ -190,7 +200,9 @@ static score_t run(enum game_class cls)
 		}
 
 		// Process game logic
-		game_tick(gm);
+		if (gm->status != GAME_PAUSED) {
+			game_tick(gm);
+		}
 
 		// Render game
 		draw_frame(gm, 0, 0);
@@ -201,7 +213,7 @@ static score_t run(enum game_class cls)
 		} else {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
-		draw_debug(gm, gm->grid->cols * 2 + 2, 6);
+		draw_debug(gm, gm->grid->cols * 2 + 2, 5);
 		refresh();
 
 		// Time End
