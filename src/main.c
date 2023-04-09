@@ -47,7 +47,7 @@ void process_keys(struct game *gm)
 		piece_rotate(&gm->current_piece, DOWN);
 		break;
 	case 'q':
-		gm->status = GAME_OVER;
+		gm->status = GAME_EXIT;
 		break;
 	default:
 		break;
@@ -180,7 +180,7 @@ static score_t run(enum game_class cls)
 	struct timeval time_start, time_end;
 	tick_time = get_tick_time(gm->level);
 
-	while (gm->status != GAME_OVER) {
+	while (gm->status < GAME_OVER) {
 		// Time Start
 		gettimeofday(&time_start, NULL);
 
@@ -209,8 +209,9 @@ static score_t run(enum game_class cls)
 		usleep(get_delay_usec(time_start, time_end));
 	}
 
-	usleep(1000000);
-
+	if (gm->status == GAME_OVER) {
+		usleep(1000000);
+	}
 	score_t final_score = gm->score;
 	game_free(gm);
 	teardown_gfx(win);

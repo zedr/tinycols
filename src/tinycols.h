@@ -44,7 +44,7 @@ enum result {
 /**
  * game_status - The possible states a game can take.
  */
-enum game_state { GAME_READY, GAME_PAUSED, GAME_OVER };
+enum game_state { GAME_READY, GAME_PAUSED, GAME_OVER, GAME_EXIT };
 
 /**
  * game_class - The game skill class, mapped to the appropriate colors
