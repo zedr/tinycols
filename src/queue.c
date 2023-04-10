@@ -1,19 +1,6 @@
 #include "queue.h"
 #include <stdlib.h>
 
-extern int foo;
-/**
-struct game_event_queue *game_queue_alloc(struct game *gm)
-{
-	;
-}
-
-void game_queue_free(struct game_event_queue *qu)
-{
-	;
-}
- **/
-
 static inline bool slot_number_is_valid(int num)
 {
 	return (num >= QUEUE_SLOTS_MAX || num < 0) ? false : true;
