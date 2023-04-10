@@ -15,6 +15,7 @@ uint8_t tmp_res[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 struct drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 struct game_event_queue qu;
 int tick_time;
+int chain_num;
 
 static void scan_grid(struct game *gm, unsigned int t);
 
@@ -29,9 +30,11 @@ void process_keys(struct game *gm)
 	if (ch == 'p') {
 		gm->status = (gm->status == GAME_PAUSED) ? GAME_READY
 							 : GAME_PAUSED;
+	} else if (ch == 'q') {
+		gm->status = GAME_EXIT;
 	}
 
-	if (gm->status == GAME_PAUSED) {
+	if (gm->status > GAME_READY) {
 		return;
 	}
 
@@ -57,7 +60,6 @@ void process_keys(struct game *gm)
 		piece_rotate(&gm->current_piece, DOWN);
 		break;
 	case 'q':
-		gm->status = GAME_EXIT;
 		break;
 	default:
 		break;
@@ -120,10 +122,12 @@ static void scan_grid(struct game *gm, unsigned int t)
 {
 	gm->current_piece.status = PERSISTED;
 	if ((gm->last_score = grid_scan(gm->grid, tmp_res)) > 0) {
-		gm->last_score *= (gm->level + 1);
+		chain_num++;
+		gm->last_score *= (gm->level + 1) * chain_num;
 		gm->score += gm->last_score;
 		game_queue_push(&qu, t + 50, remove_jewels);
 	} else {
+		chain_num = 0;
 		game_cycle_piece(gm);
 		grid_position_piece(gm->grid, &gm->current_piece);
 		gm->current_piece.status = PENDING;
@@ -146,6 +150,7 @@ void game_tick(struct game *gm)
 
 	if (gm->current_piece.status == LANDED) {
 		if (piece_persist(&gm->current_piece, gm->grid)) {
+			chain_num = 0;
 			game_queue_push(&qu, gm->tick, scan_grid);
 
 		} else {
