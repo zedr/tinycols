@@ -33,12 +33,13 @@ enum direction { UP, DOWN, LEFT, RIGHT };
  */
 enum result {
 	UNKNOWN,
-	DEACTIVATED,
 	PENDING,
+	ACTIVE,
 	MOVED,
 	BLOCKED,
 	LANDED,
 	PERSISTED,
+	INVISIBLE
 };
 
 /**

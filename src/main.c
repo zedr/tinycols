@@ -43,7 +43,7 @@ void process_keys(struct game *gm)
 		piece_move_in_grid(&gm->current_piece, LEFT, gm->grid);
 		break;
 	case KEY_DOWN:
-		if ((gm->current_piece.status != DEACTIVATED) &&
+		if ((gm->current_piece.status != PENDING) &&
 		    (piece_move_in_grid(&gm->current_piece, DOWN, gm->grid) ==
 		     MOVED)) {
 			gm->score++;
@@ -107,16 +107,18 @@ static void remove_jewels(struct game *gm, unsigned int t)
 					  gm->grid->size))) {
 		grid_apply_drops(gm->grid, tmp_drs, count);
 	}
-	game_queue_push(&qu, t, scan_grid);
+	gm->current_piece.status = INVISIBLE;
+	game_queue_push(&qu, t + 25, scan_grid);
 }
 
-static void reactivate(struct game *gm, unsigned int t)
+static void activate(struct game *gm, unsigned int t)
 {
-	gm->current_piece.status = PENDING;
+	gm->current_piece.status = ACTIVE;
 }
 
 static void scan_grid(struct game *gm, unsigned int t)
 {
+	gm->current_piece.status = PERSISTED;
 	if ((gm->last_score = grid_scan(gm->grid, tmp_res)) > 0) {
 		gm->last_score *= (gm->level + 1);
 		gm->score += gm->last_score;
@@ -124,8 +126,8 @@ static void scan_grid(struct game *gm, unsigned int t)
 	} else {
 		game_cycle_piece(gm);
 		grid_position_piece(gm->grid, &gm->current_piece);
-		gm->current_piece.status = DEACTIVATED;
-		game_queue_push(&qu, t + 50, reactivate);
+		gm->current_piece.status = PENDING;
+		game_queue_push(&qu, t + 50, activate);
 	}
 }
 
@@ -139,12 +141,11 @@ void game_tick(struct game *gm)
 	if (gm->current_piece.status == UNKNOWN) {
 		game_queue_push(&qu, gm->tick + get_tick_time(gm->level),
 				move_piece_down);
-		gm->current_piece.status = PENDING;
+		gm->current_piece.status = ACTIVE;
 	}
 
 	if (gm->current_piece.status == LANDED) {
 		if (piece_persist(&gm->current_piece, gm->grid)) {
-			gm->current_piece.status = PERSISTED;
 			game_queue_push(&qu, gm->tick, scan_grid);
 
 		} else {
@@ -210,7 +211,7 @@ static score_t run(enum game_class cls)
 
 		if (gm->current_piece.status == PERSISTED) {
 			draw_stars(tmp_res, gm->grid, 0, 0);
-		} else {
+		} else if (gm->current_piece.status != INVISIBLE) {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
 		draw_debug(gm, gm->grid->cols * 2 + 2, 5);
