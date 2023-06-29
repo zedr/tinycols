@@ -3,6 +3,6 @@ build/
 old
 _*.c
 _*.h
-.clang-format
 .idea
 .cores
+tmp/

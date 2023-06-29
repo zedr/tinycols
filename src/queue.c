@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "../include/queue.h"
 #include <stdlib.h>
 
 static inline bool slot_number_is_valid(int num)

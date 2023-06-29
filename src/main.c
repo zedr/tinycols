@@ -3,16 +3,16 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "gfx.h"
-#include "queue.h"
-#include "tinycols.h"
+#include "../include/tinycols.h"
+#include "../include/queue.h"
+#include "../include/gfx.h"
 
 #define TICK_TIME 10000
 #define MAX_TIMER 180
 
 WINDOW *win;
 uint8_t tmp_res[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
-struct drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
+struct grid_drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 struct game_event_queue qu;
 int tick_time;
 int chain_num;
@@ -28,8 +28,8 @@ void process_keys(struct game *gm)
 {
 	int ch = wgetch(win);
 	if (ch == 'p') {
-		gm->status = (gm->status == GAME_PAUSED) ? GAME_READY
-							 : GAME_PAUSED;
+		gm->status = (gm->status == GAME_PAUSED) ? GAME_READY :
+								 GAME_PAUSED;
 	} else if (ch == 'q') {
 		gm->status = GAME_EXIT;
 	}
@@ -105,8 +105,7 @@ static void remove_jewels(struct game *gm, unsigned int t)
 	gm->level = get_level_by_jewels(gm->jewels_removed);
 	tick_time = get_tick_time(gm->level);
 	unsigned int count;
-	while ((count = grid_detect_drops(gm->grid, tmp_drs,
-					  gm->grid->size))) {
+	while ((count = grid_detect_drops(gm->grid, tmp_drs, gm->grid->size))) {
 		grid_apply_drops(gm->grid, tmp_drs, count);
 	}
 	gm->current_piece.status = INVISIBLE;
@@ -129,7 +128,7 @@ static void scan_grid(struct game *gm, unsigned int t)
 	} else {
 		chain_num = 0;
 		game_cycle_piece(gm);
-		grid_position_piece(gm->grid, &gm->current_piece);
+		position_piece_in_grid(&gm->current_piece, gm->grid);
 		gm->current_piece.status = PENDING;
 		game_queue_push(&qu, t + 50, activate);
 	}
@@ -181,7 +180,7 @@ static uint32_t get_delay_usec(struct timeval start, struct timeval end)
 /**
  * run() - Run the game.
  */
-static score_t run(enum game_class cls)
+static game_score_t run(enum game_class cls)
 {
 	win = setup_gfx();
 
@@ -230,7 +229,7 @@ static score_t run(enum game_class cls)
 	if (gm->status == GAME_OVER) {
 		usleep(1000000);
 	}
-	score_t final_score = gm->score;
+	game_score_t final_score = gm->score;
 	game_free(gm);
 	teardown_gfx(win);
 	return final_score;

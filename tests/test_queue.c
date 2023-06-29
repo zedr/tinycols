@@ -1,5 +1,5 @@
 #include "../lib/minunit.h"
-#include "../src/queue.h"
+#include "../include/queue.h"
 
 void level_adder_handler(struct game *gm, unsigned int t)
 {
@@ -23,7 +23,8 @@ MU_TEST(test_queue_push_1)
 	int idx = 0;
 
 	while (idx < QUEUE_SLOT_EVENTS_MAX) {
-		bool was_pushed = game_queue_push(&queue, 1, level_adder_handler);
+		bool was_pushed =
+			game_queue_push(&queue, 1, level_adder_handler);
 		mu_assert_int_eq(true, was_pushed);
 		mu_check(*(queue.slots[1])[idx] == level_adder_handler);
 		idx++;
@@ -59,25 +60,25 @@ MU_TEST(test_queue_push_and_dispatch_with_offset_1)
 
 	game_queue_init(&queue, &gm);
 	game_queue_push(&queue, gm.tick + 50, level_adder_handler);
-	mu_assert_int_eq(1,
-			 game_queue_count(&queue,
-					  gm.tick + 50 % QUEUE_SLOT_EVENTS_MAX));
+	mu_assert_int_eq(
+		1,
+		game_queue_count(&queue, gm.tick + 50 % QUEUE_SLOT_EVENTS_MAX));
 	game_queue_dispatch(&queue, gm.tick + 50);
 	game_queue_count(&queue, 0);
 
 	gm.tick += 50;
 	game_queue_push(&queue, gm.tick + 50, level_adder_handler);
-	mu_assert_int_eq(1,
-			 game_queue_count(&queue,
-					  gm.tick + 50 % QUEUE_SLOT_EVENTS_MAX));
+	mu_assert_int_eq(
+		1,
+		game_queue_count(&queue, gm.tick + 50 % QUEUE_SLOT_EVENTS_MAX));
 	game_queue_dispatch(&queue, gm.tick + 50);
 	game_queue_count(&queue, 0);
 
 	gm.tick += 50;
 	game_queue_push(&queue, gm.tick + 50, level_adder_handler);
-	mu_assert_int_eq(1,
-			 game_queue_count(&queue,
-					  gm.tick + 50 % QUEUE_SLOT_EVENTS_MAX));
+	mu_assert_int_eq(
+		1,
+		game_queue_count(&queue, gm.tick + 50 % QUEUE_SLOT_EVENTS_MAX));
 	game_queue_dispatch(&queue, gm.tick + 50);
 	game_queue_count(&queue, 0);
 }

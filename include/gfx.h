@@ -4,7 +4,9 @@
 #include <ncurses.h>
 #include <stdlib.h>
 
-#include "tinycols.h"
+#include "../include/tinycols/game.h"
+#include "../include/tinycols/piece.h"
+#include "../include/tinycols/grid.h"
 
 WINDOW *setup_gfx(void);
 

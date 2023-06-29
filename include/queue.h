@@ -1,11 +1,7 @@
-//
-// Created by zedr on 07/04/2023.
-//
-
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 
-#include "tinycols.h"
+#include "tinycols/game.h"
 
 #define QUEUE_SLOTS_MAX UINT8_MAX
 #define QUEUE_SLOT_EVENTS_MAX 128
