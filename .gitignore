@@ -3,6 +3,7 @@ build/
 old
 _*.c
 _*.h
+*.out
 .idea
 .cores
 tmp/

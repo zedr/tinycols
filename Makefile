@@ -1,17 +1,20 @@
-.PHONY: default all test clean
+.PHONY: default all test clean debug
 
 CC 			?= gcc
 STD			:= c99
 
-SHELL 		:= /bin/bash
+SHELL 		:= /usr/bin/env bash
 SOURCES 	:= src/tinycols/*.c src/queue.c
 INCDIR		:= include/
 INCLUDES	= $(shell find $(INCDIR) -type f -name *.h)
 INC			:= -I ${INCLUDES}
-COMPILE		:= -g -DLINUX_TARGET -Wall -Werror -pedantic -std=${STD}
+COMPILE		:= -DLINUX_TARGET -Wall -Werror -pedantic -std=${STD}
 CFLAGS 		:= ${COMPILE}
+DBG_CFLAGS	:= -g -p
 
 default: build/tinycols
+
+debug: build/tinycols-debug
 
 all: default test
 
@@ -33,6 +36,11 @@ build/test_queue: build
 build/tinycols: build
 	@${CC} ${CFLAGS} -std=gnu99 -lncurses \
 		-o build/tinycols \
+		src/main.c src/gfx.c ${SOURCES}
+
+build/tinycols-debug: build
+	@${CC} ${CFLAGS} ${DBG_CFLAGS} -std=gnu99 -lncurses \
+		-o build/tinycols-debug \
 		src/main.c src/gfx.c ${SOURCES}
 
 tests: build/test_tinycols build/test_queue
