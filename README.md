@@ -30,8 +30,13 @@ A jewels matching game for the Linux terminal.
 ## Build
 
 ### Pre-requisites
+ - `make`
+ - `gcc`
  - `ncurses-devel`
- - A C compiler
+
+For debugging:
+ - libasan
+ - libubsan
 
 ### Instructions
 Run `make`.
