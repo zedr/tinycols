@@ -7,9 +7,9 @@ SOURCES 	:= src/tinycols/*.c src/queue.c
 INCDIR		:= include/
 INCLUDES	= $(shell find $(INCDIR) -type f -name *.h)
 INC		:= -I ${INCLUDES}
-COMPILE		:= -DLINUX_TARGET -Wall -Werror -pedantic -std=${STD}
+COMPILE		:= -DLINUX_TARGET -Wall -pedantic -std=${STD}
 CFLAGS 		:= ${COMPILE}
-DBG_CFLAGS	:= -g -p -fsanitize=address -fsanitize=undefined
+DBG_CFLAGS	:= -g -p -Werror -fsanitize=address -fsanitize=undefined
 
 default: build/tinycols
 
