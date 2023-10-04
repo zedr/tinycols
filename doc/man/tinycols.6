@@ -1,0 +1,32 @@
+.\" Manpage for tinycols.
+.\" Contact zedr@zedr.com to correct errors or typos.
+.TH tinycols "6" "4 October, 2023" "version 0.6.0"
+.SH NAME
+.P
+.B tinycols
+- a tiny jewel matching game for the terminal
+.SH SYNOPSIS
+.P
+.B tinycols -c[N]
+.SH DESCRIPTION
+.P
+TinyCols is a simple puzzle game for the terminal where the player
+must position clusters of colorful jewels into a grid in order to match them
+and remove them.
+.P
+The player controls one cluster of three jewels at a time and can rotate their
+order. In order to remove jewels, there must be at least three lined up in any
+direction (vertical, horizontal, and diagonal). The game is over when the
+jewels overflow the top of the grid.
+.SH OPTIONS
+.P
+.RS
+.B -c<N>
+.RS
+The class, or difficulty level, of the game. This affects the number of
+different jewel colors available for play.
+The player can choose between three different classes: 1 (Novice),
+2 (Amateur), and 3 (Pro).
+.SH AUTHOR
+.P
+Rigel Di Scala <zedr@zedr.com>
