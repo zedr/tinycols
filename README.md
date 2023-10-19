@@ -1,5 +1,5 @@
 # TinyCols
-A jewels matching game for the Linux terminal.
+A jewels matching game for the Unix terminal.
 
 ![Screenshot](media/screen.png)
 
