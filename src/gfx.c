@@ -80,6 +80,7 @@ void draw_frame(struct game *gm, int offset_x, int offset_y)
 		  gm->grid->rows + 1);
 	int x = (offset_x + gm->grid->cols + 1) * 2;
 	draw_rect(x, offset_y, x + 2 + 1, offset_y + 4);
+	draw_rect(x, offset_y + 5, x + 20 + 1, offset_y + 12);
 }
 
 void draw_game(struct game *gm, int offset_x, int offset_y)
@@ -126,14 +127,15 @@ void draw_debug(struct game *g, int x, int y)
 		break;
 	}
 	mvprintw(y++, x, "level:\t%hu ", (unsigned short)g->level);
+	mvprintw(y++, x, "jewels:\t%lu ", (unsigned long)g->jewels_removed);
 	mvprintw(y++, x, "score:\t%lu ", (unsigned long)g->score);
 	if (g->last_score > 0) {
 		mvprintw(y++, x, "      \t+%lu ", (unsigned long)g->last_score);
 	} else {
 		mvprintw(y++, x, "      \t     ");
 	}
-	mvprintw(y++, x, "jewels:\t%lu ", (unsigned long)g->jewels_removed);
 	if (debug_mode) {
+		y++;
 		mvprintw(y++, x, "grid size:\t%d x %d  ", g->grid->cols, g->grid->rows);
 		mvprintw(y++, x, "piece coords:\t%d, %d  ", pc.col, pc.row);
 		int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;

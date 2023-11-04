@@ -219,7 +219,7 @@ static game_score_t run(enum game_class cls)
 		} else if (gm->current_piece.status != INVISIBLE) {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
-		draw_debug(gm, gm->grid->cols * 2 + 3, 5);
+		draw_debug(gm, gm->grid->cols * 2 + 3, 6);
 		refresh();
 
 		// Time End
