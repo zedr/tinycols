@@ -7,6 +7,7 @@
 #include "../include/queue.h"
 #include "../include/gfx.h"
 
+#define TINYCOLS_VERSION "0.7.0"
 #define TICK_TIME 10000
 #define MAX_TIMER 180
 
@@ -248,7 +249,9 @@ static void init_rand(void)
 
 static void usage(char *prog_name)
 {
-	fprintf(stderr, "Usage:\n  %s [-c class]\n", prog_name);
+	fprintf(stderr,
+		"Usage:\n  %s [-c class][-hdV]\n",
+		prog_name);
 	fputs("\n", stderr);
 	fputs("Options:\n", stderr);
 	fputs("  -h\t\tPrint this help message.\n", stderr);
@@ -258,6 +261,8 @@ static void usage(char *prog_name)
 	      "3 (Pro). "
 	      "The default is 2.\n",
 	      stderr);
+	fputs("  -d\t\tRun in debug mode.\n", stderr);
+	fputs("  -V\t\tPrint the program version.\n", stderr);
 }
 
 int main(int argc, char **argv)
@@ -267,7 +272,7 @@ int main(int argc, char **argv)
 	enum game_class cls = CLASS_AMATEUR;
 
 	char *prog_name = argv[0];
-	while ((opt = getopt(argc, argv, "c:dh")) != -1) {
+	while ((opt = getopt(argc, argv, "c:dhV")) != -1) {
 		switch (opt) {
 		case 'h': {
 			usage(prog_name);
@@ -287,6 +292,10 @@ int main(int argc, char **argv)
 		case 'd': {
 			debug_mode = true;
 			break;
+		}
+		case 'V': {
+			fprintf(stderr, "%s\n", TINYCOLS_VERSION);
+			exit(EXIT_SUCCESS);
 		}
 		default:
 			usage(prog_name);
