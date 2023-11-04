@@ -1,5 +1,7 @@
 #include "../include/gfx.h"
 
+extern bool debug_mode;
+
 WINDOW *setup_gfx(void)
 {
 	WINDOW *win = initscr();
@@ -109,16 +111,6 @@ void draw_debug(struct game *g, int x, int y)
 	} else {
 		mvprintw(y++, x, "            ");
 	}
-	mvprintw(y++, x, "grid size:\t%d x %d  ", g->grid->cols, g->grid->rows);
-	mvprintw(y++, x, "piece coords:\t%d, %d  ", pc.col, pc.row);
-	int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;
-	if (idx >= 0 && idx < g->grid->cols * g->grid->rows) {
-		mvprintw(y++, x, "under piece:\t%d  ", g->grid->cells[idx]);
-	} else {
-		mvprintw(y++, x, "under piece:\tn/a");
-	}
-	mvprintw(y++, x, "piece status:\t%d  ", g->current_piece.status);
-	mvprintw(y++, x, "tick:\t%d  ", g->tick);
 	switch ((enum game_class)g->color_max) {
 	case CLASS_NOVICE:
 		mvprintw(y++, x, "class:\tnovice");
@@ -141,4 +133,16 @@ void draw_debug(struct game *g, int x, int y)
 		mvprintw(y++, x, "      \t     ");
 	}
 	mvprintw(y++, x, "jewels:\t%lu ", (unsigned long)g->jewels_removed);
+	if (debug_mode) {
+		mvprintw(y++, x, "grid size:\t%d x %d  ", g->grid->cols, g->grid->rows);
+		mvprintw(y++, x, "piece coords:\t%d, %d  ", pc.col, pc.row);
+		int idx = g->grid->cols * (pc.row + PIECE_SIZE) + pc.col;
+		if (idx >= 0 && idx < g->grid->cols * g->grid->rows) {
+			mvprintw(y++, x, "under piece:\t%d  ", g->grid->cells[idx]);
+		} else {
+			mvprintw(y++, x, "under piece:\tn/a");
+		}
+		mvprintw(y++, x, "piece status:\t%d  ", g->current_piece.status);
+		mvprintw(y++, x, "tick:\t%d  ", g->tick);
+	}
 }

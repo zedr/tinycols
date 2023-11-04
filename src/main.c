@@ -16,6 +16,7 @@ struct grid_drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
 struct game_event_queue qu;
 int tick_time;
 int chain_num;
+bool debug_mode = false;
 
 static void scan_grid(struct game *gm, unsigned int t);
 
@@ -218,7 +219,7 @@ static game_score_t run(enum game_class cls)
 		} else if (gm->current_piece.status != INVISIBLE) {
 			draw_piece(&gm->current_piece, 1, 1);
 		}
-		draw_debug(gm, gm->grid->cols * 2 + 2, 5);
+		draw_debug(gm, gm->grid->cols * 2 + 3, 5);
 		refresh();
 
 		// Time End
@@ -266,7 +267,7 @@ int main(int argc, char **argv)
 	enum game_class cls = CLASS_AMATEUR;
 
 	char *prog_name = argv[0];
-	while ((opt = getopt(argc, argv, "c:h")) != -1) {
+	while ((opt = getopt(argc, argv, "c:dh")) != -1) {
 		switch (opt) {
 		case 'h': {
 			usage(prog_name);
@@ -281,6 +282,10 @@ int main(int argc, char **argv)
 						"1 and 3.\n");
 				exit(EXIT_FAILURE);
 			}
+			break;
+		}
+		case 'd': {
+			debug_mode = true;
 			break;
 		}
 		default:
