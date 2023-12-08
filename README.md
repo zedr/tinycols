@@ -1,7 +1,7 @@
 # TinyCols
 A jewels matching game for the Unix terminal.
 
-![Screenshot](media/screen.png)
+![Screenshot](media/video.gif)
 
 ## Features
 - [x] Single player mode
