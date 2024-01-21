@@ -61,7 +61,7 @@ struct game {
  *
  * @return The new grid, or NULL if memory allocation fails.
  */
-struct game *game_alloc(void);
+struct game *game_alloc(uint8_t grid_rows, uint8_t grid_cols);
 
 /**
  * game_init() - Initialize a game.

@@ -3,9 +3,9 @@
 #include "../../include/tinycols/game.h"
 #include "../../include/tinycols/game_utils.h"
 
-struct game *game_alloc(void)
+struct game *game_alloc(uint8_t grid_rows, uint8_t grid_cols)
 {
-	struct grid *gr = grid_alloc(GRID_DEFAULT_ROWS, GRID_DEFAULT_COLS);
+	struct grid *gr = grid_alloc(grid_rows, grid_cols);
 	if (gr == NULL) {
 		return NULL;
 	}

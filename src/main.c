@@ -7,13 +7,13 @@
 #include "../include/queue.h"
 #include "../include/gfx.h"
 
-#define TINYCOLS_VERSION "0.7.0"
+#define TINYCOLS_VERSION "0.8.0"
 #define TICK_TIME 10000
 #define MAX_TIMER 180
 
 WINDOW *win;
-uint8_t tmp_res[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
-struct grid_drop tmp_drs[GRID_DEFAULT_COLS * GRID_DEFAULT_ROWS];
+uint8_t *tmp_res;
+struct grid_drop *tmp_drs;
 struct game_event_queue qu;
 int tick_time;
 int chain_num;
@@ -153,7 +153,6 @@ void game_tick(struct game *gm)
 		if (piece_persist(&gm->current_piece, gm->grid)) {
 			chain_num = 0;
 			game_queue_push(&qu, gm->tick, scan_grid);
-
 		} else {
 			gm->status = GAME_OVER;
 		}
@@ -182,17 +181,19 @@ static uint32_t get_delay_usec(struct timeval start, struct timeval end)
 /**
  * run() - Run the game.
  */
-static game_score_t run(enum game_class cls)
+static game_score_t run(enum game_class cls, uint8_t game_rows, uint8_t game_cols)
 {
 	win = setup_gfx();
 
-	struct game *gm = game_alloc();
+	struct game *gm = game_alloc(game_rows, game_cols);
 	if (gm == NULL) {
 		perror("Out of memory");
 		exit(EXIT_FAILURE);
 	}
 	game_init(gm, GAME_DEFAULT_LEVEL, cls);
 	game_queue_init(&qu, gm);
+	tmp_res = malloc(sizeof(*tmp_res) * gm->grid->size);
+	tmp_drs = malloc(sizeof(*tmp_drs) * gm->grid->size);
 
 	struct timeval time_start, time_end;
 	tick_time = get_tick_time(gm->level);
@@ -233,6 +234,8 @@ static game_score_t run(enum game_class cls)
 	}
 	game_score_t final_score = gm->score;
 	game_free(gm);
+	free(tmp_res);
+	free(tmp_drs);
 	teardown_gfx(win);
 	return final_score;
 }
@@ -262,6 +265,10 @@ static void usage(char *prog_name)
 	      "The default is 2.\n",
 	      stderr);
 	fputs("  -d\t\tRun in debug mode.\n", stderr);
+	fputs("  -C\t\tUse a grid with the given number of columns.\n",
+	      stderr);
+	fputs("  -R\t\tUse a grid with the given number of rows.\n",
+	      stderr);
 	fputs("  -V\t\tPrint the program version.\n", stderr);
 }
 
@@ -270,9 +277,11 @@ int main(int argc, char **argv)
 	init_rand();
 	int opt;
 	enum game_class cls = CLASS_AMATEUR;
+	uint8_t game_cols = GRID_DEFAULT_COLS;
+	uint8_t game_rows = GRID_DEFAULT_ROWS;
 
 	char *prog_name = argv[0];
-	while ((opt = getopt(argc, argv, "c:dhV")) != -1) {
+	while ((opt = getopt(argc, argv, "c:C:R:dhV")) != -1) {
 		switch (opt) {
 		case 'h': {
 			usage(prog_name);
@@ -296,6 +305,29 @@ int main(int argc, char **argv)
 		case 'V': {
 			fprintf(stderr, "%s\n", TINYCOLS_VERSION);
 			exit(EXIT_SUCCESS);
+			break;
+		}
+		case 'C': {
+			const int num = atoi(optarg);
+			if (num >= 2 && num <= 80) {
+				game_cols = num;
+			} else {
+				fprintf(stderr, "Error: columns must be between "
+						"2 and 80.\n");
+				exit(EXIT_FAILURE);
+			}
+			break;
+		}
+		case 'R': {
+			const int num = atoi(optarg);
+			if (num >= 6 && num <= 40) {
+				game_rows = num;
+			} else {
+				fprintf(stderr, "Error: rows must be between "
+						"6 and 40.\n");
+				exit(EXIT_FAILURE);
+			}
+			break;
 		}
 		default:
 			usage(prog_name);
@@ -303,6 +335,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("Final score: %hu\n", run(cls));
+	printf("Final score: %hu\n", run(cls, game_rows, game_cols));
 	return 0;
 }

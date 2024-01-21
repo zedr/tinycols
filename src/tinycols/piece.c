@@ -82,7 +82,7 @@ void piece_randomize(struct piece *pc, unsigned int max_color)
 bool piece_persist(struct piece *pc, struct grid *gr)
 {
 	if (pc->col < 0 || pc->row < 0 || pc->col >= gr->cols ||
-	    pc->row >= gr->rows || pc->col + PIECE_SIZE > gr->rows) {
+	    pc->row + PIECE_SIZE > gr->rows) {
 		return false;
 	}
 

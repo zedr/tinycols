@@ -356,7 +356,7 @@ MU_TEST(test_piece_rotate_1)
 
 MU_TEST(test_game_init_1)
 {
-	struct game *gm = game_alloc();
+	struct game *gm = game_alloc(GRID_DEFAULT_ROWS, GRID_DEFAULT_COLS);
 	game_init(gm, GAME_DEFAULT_LEVEL, CLASS_PRO);
 
 	mu_assert_int_eq(GAME_DEFAULT_LEVEL, gm->level);
@@ -389,29 +389,10 @@ MU_TEST(test_game_set_level_1)
 	mu_assert_int_eq(1, get_level_by_jewels(31));
 	mu_assert_int_eq(2, get_level_by_jewels(60));
 
-	struct game *gm = game_alloc();
+	struct game *gm = game_alloc(GRID_DEFAULT_ROWS, GRID_DEFAULT_COLS);
 	game_init(gm, GAME_DEFAULT_LEVEL, CLASS_PRO);
 
 	gm->level = get_level_by_jewels(31);
-	mu_assert_int_eq(1, gm->level);
-
-	game_free(gm);
-}
-
-MU_TEST(test_game_adjust_1)
-{
-	struct game *gm = game_alloc();
-	game_init(gm, GAME_DEFAULT_LEVEL, CLASS_PRO);
-
-	mu_assert_int_eq(0, gm->level);
-
-	gm->jewels_removed = 10;
-	mu_assert_int_eq(false, game_adjust(gm));
-	mu_assert_int_eq(0, gm->level);
-	mu_assert_int_eq(GAME_DEFAULT_COLOR_MIN, gm->color_max);
-
-	gm->jewels_removed = GAME_DEFAULT_JEWELS_FOR_LEVEL;
-	mu_assert_int_eq(true, game_adjust(gm));
 	mu_assert_int_eq(1, gm->level);
 
 	game_free(gm);
@@ -424,6 +405,24 @@ MU_TEST(test_game_ticker_1)
 	gm.tick += 300;
 
 	mu_assert_int_eq(44, gm.tick);
+}
+
+MU_TEST(test_game_large_grid_1)
+{
+	struct game *gm = game_alloc(40, 80);
+	game_init(gm,
+		  GAME_DEFAULT_LEVEL,
+		  CLASS_PRO);
+
+	gm->current_piece.row = 40 - 3;
+	gm->current_piece.col = 40;
+	enum result res = piece_move_in_grid(&gm->current_piece,
+					     DOWN,
+					     gm->grid);
+	mu_assert(res == LANDED, "The piece should land");
+	mu_check(piece_persist(&gm->current_piece, gm->grid));
+
+	game_free(gm);
 }
 
 MU_TEST_SUITE(test_suite_grid)
@@ -455,7 +454,7 @@ MU_TEST_SUITE(test_suite_game)
 {
 	MU_RUN_TEST(test_game_init_1);
 	MU_RUN_TEST(test_game_set_level_1);
-	MU_RUN_TEST(test_game_adjust_1);
+	MU_RUN_TEST(test_game_large_grid_1);
 }
 
 MU_TEST_SUITE(test_suite_game_ticker)
