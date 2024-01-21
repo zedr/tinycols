@@ -73,14 +73,6 @@ struct game *game_alloc(void);
 void game_init(struct game *gm, unsigned int level, enum game_class class);
 
 /**
- * game_adjust() - Adjust the game according to the number of removed jewels.
- *
- * @param gm: The game to inspect and adjust
- * @return Were the game settings changed?
- */
-bool game_adjust(struct game *gm);
-
-/**
  * game_cycle_piece() - Cycle the current and next pieces in a given game.
  *
  * @param gm: The game to modify.

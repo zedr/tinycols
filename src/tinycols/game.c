@@ -35,24 +35,6 @@ void game_init(struct game *gm, unsigned int level, enum game_class class)
 	gm->next_piece.status = UNKNOWN;
 }
 
-bool game_adjust(struct game *gm)
-{
-	uint_least16_t jewels = gm->jewels_removed;
-	unsigned short prev_level = gm->level;
-
-	if (jewels < GAME_DEFAULT_JEWELS_FOR_LEVEL) {
-		gm->level = 0;
-		gm->color_max = GAME_DEFAULT_COLOR_MIN;
-	} else if (jewels < GAME_DEFAULT_JEWELS_FOR_LEVEL * 2) {
-		gm->level = 1;
-		gm->color_max = GAME_DEFAULT_COLOR_MIN;
-	} else if (jewels < GAME_DEFAULT_JEWELS_FOR_LEVEL * 3) {
-		gm->level = 2;
-		gm->color_max = GAME_DEFAULT_COLOR_MIN;
-	}
-	return prev_level != gm->level;
-}
-
 void game_cycle_piece(struct game *gm)
 {
 	for (int i = 0; i < PIECE_SIZE; i++) {
