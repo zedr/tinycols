@@ -7,7 +7,7 @@
 #include "../include/queue.h"
 #include "../include/gfx.h"
 
-#define TINYCOLS_VERSION "0.8.0"
+#define TINYCOLS_VERSION "0.8.1"
 #define TICK_TIME 10000
 #define MAX_TIMER 180
 
