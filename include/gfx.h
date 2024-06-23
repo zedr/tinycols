@@ -10,7 +10,7 @@
 
 WINDOW *setup_gfx(void);
 
-void teardown_gfx(void);
+void teardown_gfx(WINDOW *win);
 
 void draw_debug(struct game *g, int x, int y);
 

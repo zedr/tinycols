@@ -29,7 +29,7 @@ WINDOW *setup_gfx(void)
 	return win;
 }
 
-void teardown_gfx(void)
+void teardown_gfx(WINDOW *win)
 {
 	endwin();
 }
