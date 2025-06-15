@@ -22,22 +22,6 @@ struct game_event_queue {
 };
 
 /**
- * game_event_queue() - Allocate an event queue and bind it to the given game.
- *
- * @return the new and empty event queue
- */
-struct game_event_queue *game_queue_alloc(struct game *gm);
-
-/**
- * game_queue_free() - Free the given event queue.
- *
- * The bound game will _not_ be freed!
- *
- * @param qu: The event queue to free.
- */
-void game_queue_free(struct game_event_queue *qu);
-
-/**
  * game_queue_init() - Initialize an event queue.
  *
  * @param qu: The given queue to initialize.

@@ -12,6 +12,7 @@ struct game *game_alloc(uint8_t grid_rows, uint8_t grid_cols)
 
 	struct game *gm = malloc(sizeof *gm);
 	if (gm == NULL) {
+		free(gr);
 		return NULL;
 	}
 

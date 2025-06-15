@@ -188,12 +188,19 @@ static game_score_t run(enum game_class cls, uint8_t game_rows, uint8_t game_col
 	struct game *gm = game_alloc(game_rows, game_cols);
 	if (gm == NULL) {
 		perror("Out of memory");
+		teardown_gfx(win);
 		exit(EXIT_FAILURE);
 	}
 	game_init(gm, GAME_DEFAULT_LEVEL, cls);
 	game_queue_init(&qu, gm);
 	tmp_res = malloc(sizeof(*tmp_res) * gm->grid->size);
 	tmp_drs = malloc(sizeof(*tmp_drs) * gm->grid->size);
+	if (tmp_res == NULL || tmp_drs == NULL) {
+		perror("Out of memory");
+		game_free(gm);
+		teardown_gfx(win);
+		exit(EXIT_FAILURE);
+	}
 
 	struct timeval time_start, time_end;
 	tick_time = get_tick_time(gm->level);
