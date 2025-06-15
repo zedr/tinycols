@@ -5,5 +5,6 @@ _*.c
 _*.h
 *.out
 .idea
+.idea/*
 .cores
 tmp/
