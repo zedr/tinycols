@@ -21,7 +21,7 @@ bool game_queue_push(struct game_event_queue *qu, int slot_number,
 {
 	event_handler_t *hnds = qu->slots[slot_number % QUEUE_SLOTS_MAX];
 	for (int i = 0; i < QUEUE_SLOT_EVENTS_MAX; i++) {
-		if (*hnds[i] == NULL) {
+		if (hnds[i] == NULL) {
 			hnds[i] = handler;
 			return true;
 		}
@@ -38,7 +38,7 @@ int game_queue_dispatch(struct game_event_queue *qu, int slot_number)
 	int count = 0;
 	event_handler_t *hnds = qu->slots[slot_number];
 	for (int i = 0; i < QUEUE_SLOT_EVENTS_MAX; i++) {
-		if (*hnds[i] != NULL) {
+		if (hnds[i] != NULL) {
 			hnds[i](qu->game, slot_number);
 			hnds[i] = NULL;
 			count++;
@@ -57,7 +57,7 @@ int game_queue_count(struct game_event_queue *qu, int slot_number)
 
 	int count = 0;
 	for (int i = 0; i < QUEUE_SLOT_EVENTS_MAX; i++) {
-		if (*(qu->slots[slot_number])[i] != NULL) {
+		if ((qu->slots[slot_number])[i] != NULL) {
 			count++;
 		}
 	}
