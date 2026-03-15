@@ -8,3 +8,6 @@ _*.h
 .idea/*
 .cores
 tmp/
+*.tar.gz
+*.src.rpm
+results_tinycols

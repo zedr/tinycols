@@ -70,11 +70,12 @@ version:
 	@echo $(NAME)-$(VERSION)
 
 rpm: build/$(NAME)-$(VERSION).tar.gz
+	@sed -i "s/^Version:.*/Version:        $(VERSION)/" $(NAME).spec
+	@cp build/$(NAME)-$(VERSION).tar.gz .
 	@mkdir -p $(RPM_TOPDIR)/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 	@cp build/$(NAME)-$(VERSION).tar.gz $(RPM_TOPDIR)/SOURCES/
 	rpmbuild -ba \
 		--define "_topdir $(RPM_TOPDIR)" \
-		--define "pkg_version $(VERSION)" \
 		$(NAME).spec
 
 build/$(NAME)-$(VERSION).tar.gz: build
