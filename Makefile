@@ -66,6 +66,9 @@ NAME		:= tinycols
 VERSION		:= $(shell grep -oP '(?<=TINYCOLS_VERSION ")[\d.]+' src/main.c)
 RPM_TOPDIR	:= $(CURDIR)/build/rpm
 
+version:
+	@echo $(NAME)-$(VERSION)
+
 rpm: build/$(NAME)-$(VERSION).tar.gz
 	@mkdir -p $(RPM_TOPDIR)/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 	@cp build/$(NAME)-$(VERSION).tar.gz $(RPM_TOPDIR)/SOURCES/
