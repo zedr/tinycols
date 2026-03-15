@@ -15,9 +15,9 @@ BuildRequires:  ncurses-devel
 
 %description
 TinyCols is a jewel-matching puzzle game for the Unix terminal, inspired by
-classic arcade and console games. Players guide clusters of three colored 
-jewels as they fall into a grid; when three or more jewels of the same color align
-vertically, horizontally, or diagonally, they are removed and points are
+classic arcade and console games. Players guide clusters of three colored
+jewels as they fall into a grid; when three or more jewels of the same color
+align vertically, horizontally, or diagonally, they are removed and points are
 scored. The game offers three difficulty classes (Novice, Amateur, Pro) with
 an increasing number of jewel colors, and supports a customizable grid size.
 
@@ -27,8 +27,12 @@ an increasing number of jewel colors, and supports a customizable grid size.
 %build
 %make_build
 
+%check
+%make_build tests
+make test
+
 %install
-install -Dpm 0755 build/%{name} %{buildroot}%{_bindir}/%{name}
+install -Dspm 0755 build/%{name} %{buildroot}%{_bindir}/%{name}
 install -Dpm 0644 doc/man/%{name}.6 %{buildroot}%{_mandir}/man6/%{name}.6
 
 %files
@@ -37,5 +41,5 @@ install -Dpm 0644 doc/man/%{name}.6 %{buildroot}%{_mandir}/man6/%{name}.6
 %{_mandir}/man6/%{name}.6*
 
 %changelog
-* Sun Mar 15 2026 Rigel Di Scala <zedr@zedr.com> - 0.8.4-1
+* Sun Mar 15 2026 Rigel Di Scala <zedr@zedr.com> - 0.8.6-1
 - Initial package

@@ -7,7 +7,7 @@ SOURCES 	:= src/tinycols/*.c src/queue.c
 INCDIR		:= include/
 INCLUDES	= $(shell find $(INCDIR) -type f -name *.h)
 INC		:= -I ${INCLUDES}
-COMPILE		:= -DLINUX_TARGET -Wall -pedantic -std=${STD}
+COMPILE		:= -DLINUX_TARGET -Wall -pedantic -std=${STD} -fPIE
 CFLAGS 		:= ${COMPILE}
 DBG_CFLAGS	:= -g -p -Werror -fsanitize=address -fsanitize=undefined
 
@@ -35,6 +35,7 @@ build/test_queue: build
 build/tinycols: build
 	@${CC} ${CFLAGS} \
 		-std=gnu99 \
+		-pie \
 		-lncurses \
 		-o $@ \
 		src/main.c src/gfx.c ${SOURCES}
