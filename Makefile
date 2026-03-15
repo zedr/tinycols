@@ -1,4 +1,4 @@
-.PHONY: default all test debug clean
+.PHONY: default all test debug clean rpm
 
 CC 		?= gcc
 STD		:= c99
@@ -61,3 +61,18 @@ debug: build/tinycols-dbg
 
 clean:
 	@rm -rf build
+
+NAME		:= tinycols
+VERSION		:= 0.8.4
+RPM_TOPDIR	:= $(CURDIR)/build/rpm
+
+rpm: build/$(NAME)-$(VERSION).tar.gz
+	@mkdir -p $(RPM_TOPDIR)/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+	@cp build/$(NAME)-$(VERSION).tar.gz $(RPM_TOPDIR)/SOURCES/
+	rpmbuild -ba \
+		--define "_topdir $(RPM_TOPDIR)" \
+		$(NAME).spec
+
+build/$(NAME)-$(VERSION).tar.gz: build
+	git archive --format=tar.gz --prefix=$(NAME)-$(VERSION)/ HEAD \
+		-o build/$(NAME)-$(VERSION).tar.gz
