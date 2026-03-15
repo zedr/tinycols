@@ -61,7 +61,7 @@ test:
 debug: build/tinycols-dbg
 
 clean:
-	@rm -rf build
+	@rm -rf build results_tinycols
 
 NAME		:= tinycols
 VERSION		:= $(shell grep -oP '(?<=TINYCOLS_VERSION ")[\d.]+' src/main.c)

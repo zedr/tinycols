@@ -5,7 +5,7 @@ Summary:        A jewel-matching puzzle game for the Unix terminal
 
 License:        BSD-3-Clause
 URL:            https://github.com/zedr/tinycols
-Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 
 %global debug_package %{nil}
 
@@ -15,11 +15,7 @@ BuildRequires:  ncurses-devel
 
 %description
 TinyCols is a jewel-matching puzzle game for the Unix terminal, inspired by
-classic arcade and console games. Players guide clusters of three colored
-jewels as they fall into a grid; when three or more jewels of the same color
-align vertically, horizontally, or diagonally, they are removed and points are
-scored. The game offers three difficulty classes (Novice, Amateur, Pro) with
-an increasing number of jewel colors, and supports a customizable grid size.
+classic arcade and console games.
 
 %prep
 %autosetup
@@ -28,7 +24,7 @@ an increasing number of jewel colors, and supports a customizable grid size.
 %make_build
 
 %check
-%make_build tests
+%make_build tests DBG_CFLAGS=
 make test
 
 %install
