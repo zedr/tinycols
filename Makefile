@@ -63,7 +63,7 @@ clean:
 	@rm -rf build
 
 NAME		:= tinycols
-VERSION		:= 0.8.4
+VERSION		:= $(shell grep -oP '(?<=TINYCOLS_VERSION ")[\d.]+' src/main.c)
 RPM_TOPDIR	:= $(CURDIR)/build/rpm
 
 rpm: build/$(NAME)-$(VERSION).tar.gz
