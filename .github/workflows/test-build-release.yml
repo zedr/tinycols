@@ -15,7 +15,7 @@ jobs:
       image: fedora:latest
     steps:
     - name: Install build dependencies
-      run: dnf install -y gcc make
+      run: dnf install -y gcc make libasan libubsan
     - uses: actions/checkout@v4
     - name: make tests
       run: make tests

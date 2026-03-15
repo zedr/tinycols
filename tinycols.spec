@@ -1,5 +1,5 @@
 Name:           tinycols
-Version:        0.8.4
+Version:        %{pkg_version}
 Release:        1%{?dist}
 Summary:        A jewel-matching puzzle game for the Unix terminal
 

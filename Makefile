@@ -71,6 +71,7 @@ rpm: build/$(NAME)-$(VERSION).tar.gz
 	@cp build/$(NAME)-$(VERSION).tar.gz $(RPM_TOPDIR)/SOURCES/
 	rpmbuild -ba \
 		--define "_topdir $(RPM_TOPDIR)" \
+		--define "pkg_version $(VERSION)" \
 		$(NAME).spec
 
 build/$(NAME)-$(VERSION).tar.gz: build
