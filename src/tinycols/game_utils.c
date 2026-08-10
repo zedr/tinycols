@@ -11,5 +11,10 @@ unsigned short get_level_by_jewels(uint_least16_t num)
 
 inline game_score_t calc_score(unsigned int jewel_count)
 {
-	return (jewel_count - PIECE_SIZE + 1) * GAME_SCORE_PER_PIECE;
+	switch (jewel_count) {
+	case 3: return 30;
+	case 4: return 70;
+	case 5: return 150;
+	default: return jewel_count * 30;
+	}
 }
