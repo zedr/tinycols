@@ -47,3 +47,10 @@ Run `./build/tinycols -h` for usage information.
 ## Test
 Run `make test && ./build/test`.
 
+## AI usage policy
+
+ - AI may be used to scan for bugs and memory leaks
+ - AI has not and will not be used to design and implement the code
+
+The code is and will remain 100% a human creation.
+
