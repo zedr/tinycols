@@ -197,6 +197,8 @@ static game_score_t run(enum game_class cls, uint8_t game_rows, uint8_t game_col
 	tmp_drs = malloc(sizeof(*tmp_drs) * gm->grid->size);
 	if (tmp_res == NULL || tmp_drs == NULL) {
 		perror("Out of memory");
+		free(tmp_res);
+		free(tmp_drs);
 		game_free(gm);
 		teardown_gfx(win);
 		exit(EXIT_FAILURE);
