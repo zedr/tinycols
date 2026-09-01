@@ -18,7 +18,7 @@ jobs:
       run: dnf install -y gcc make libasan libubsan
     - uses: actions/checkout@v4
     - name: make tests
-      run: make tests
+      run: make tests SANITIZE=1
     - name: test_queue
       run: ./build/test_queue
     - name: test_tinycols

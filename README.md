@@ -34,9 +34,11 @@ A jewels matching game for the Unix terminal.
  - `gcc`
  - `ncurses-devel`
 
-For debugging:
+For sanitizing:
  - libasan
  - libubsan
+
+Run with SANITIZE=1.
 
 ### Instructions
 Run `make`.
@@ -45,12 +47,13 @@ Run `make`.
 Run `./build/tinycols -h` for usage information.
 
 ## Test
-Run `make test && ./build/test`.
+Run `make test`.
 
 ## AI usage policy
 
  - AI may be used to scan for bugs and memory leaks
- - AI has not and will not be used to design and implement the code
+ - AI may be used to implement build scripts and CI infrastructure
+ - AI **has not and will not** be used to design and implement the code
 
 The code is and will remain 100% a human creation.
 

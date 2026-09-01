@@ -1,4 +1,4 @@
-.PHONY: default all test debug clean rpm
+.PHONY: default all test tests debug clean rpm
 
 CC 		?= gcc
 STD		:= c99
@@ -9,7 +9,12 @@ INCLUDES	= $(shell find $(INCDIR) -type f -name *.h)
 INC		:= -I ${INCLUDES}
 COMPILE		:= -DLINUX_TARGET -Wall -pedantic -std=${STD} -fPIE
 CFLAGS 		:= ${COMPILE}
-DBG_CFLAGS	:= -g -p -Werror -fsanitize=address -fsanitize=undefined
+DBG_CFLAGS	:= -g -p -Werror
+SANITIZE	?= 0
+SAN_FLAGS	:=
+ifeq ($(SANITIZE),1)
+SAN_FLAGS	:= -fsanitize=address -fsanitize=undefined
+endif
 
 default: build/tinycols
 
@@ -21,13 +26,13 @@ build:
 	@mkdir build
 
 build/test_tinycols: build
-	@${CC} ${CFLAGS} ${DBG_CFLAGS} \
+	@${CC} ${CFLAGS} ${DBG_CFLAGS} ${SAN_FLAGS} \
 		-D_POSIX_C_SOURCE=199309L \
 		-o build/test_tinycols \
 		lib/*.c tests/test_tinycols.c ${SOURCES}
 
 build/test_queue: build
-	@${CC} ${CFLAGS} ${DBG_CFLAGS} \
+	@${CC} ${CFLAGS} ${DBG_CFLAGS} ${SAN_FLAGS} \
 		-D_POSIX_C_SOURCE=199309L \
 		-o build/test_queue \
 		lib/*.c src/queue.c src/tinycols/*.c tests/test_queue.c
@@ -41,20 +46,20 @@ build/tinycols: build
 		src/main.c src/gfx.c ${SOURCES}
 
 build/tinycols-dbg: build
-	@${CC} ${CFLAGS} ${DBG_CFLAGS} \
+	@${CC} ${CFLAGS} ${DBG_CFLAGS} ${SAN_FLAGS} \
 		-std=gnu99 \
 		-lncurses \
 		-o $@ \
 		src/main.c src/gfx.c ${SOURCES}
 
 build/tinycols-debug: build
-	@${CC} ${CFLAGS} ${DBG_CFLAGS} -std=gnu99 -lncurses \
+	@${CC} ${CFLAGS} ${DBG_CFLAGS} ${SAN_FLAGS} -std=gnu99 -lncurses \
 		-o build/tinycols-debug \
 		src/main.c src/gfx.c ${SOURCES}
 
 tests: build/test_tinycols build/test_queue
 
-test:
+test: tests
 	@build/test_tinycols
 	@build/test_queue
 
